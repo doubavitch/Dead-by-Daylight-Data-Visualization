@@ -4,3 +4,69 @@ author: "Clara Duchossois"
 date: "Winter Semester 2023-2024"
 output: html_document
 ---
+
+We first load all the needed libraries, as well as the original data file
+
+```{r}
+library(tidyverse)
+library(ggplot2)
+library(readr)
+library(dplyr)
+dead_by_daylight <- read_csv('Dead by Daylight data - Sheet 1.csv')
+dead_by_daylight
+theme_set(theme_bw())
+```
+
+## Repairs Density
+```{r}
+density(pull(dead_by_daylight, `# Finished generators`))
+
+ggplot() +
+geom_density(aes(x = dead_by_daylight$`# Finished generators`, fill = "", alpha = 0.)) +
+geom_vline(aes(xintercept = mean(dead_by_daylight$`# Finished generators`), colour = ""), linewidth = 1, linetype = 'dashed') +
+labs(title = "Density of the number of repaired generators per match", x = "Repaired generators", y ="Density", colour = "Mean") +
+scale_alpha(guide = 'none') +
+guides(fill = 'none') +
+expand_limits(x = c(-1,6), y = c(0,0.65))
+```
+
+
+```{r}
+dead_by_daylight |> 
+ggplot() +
+geom_density(aes(x = dead_by_daylight$`# Finished generators`, fill = Season, alpha = 0.3)) +
+geom_vline(aes(xintercept = mean(dead_by_daylight$`# Finished generators`), colour = ""), linewidth = 1, linetype = 'dashed') +
+facet_wrap(~Season) +
+labs(title = "Density of the number of repaired generators per match per season", x = "Repaired generators", y ="Density", colour = "Mean") +
+scale_alpha(guide = 'none') +
+guides(fill = 'none') +
+expand_limits(x = c(-2,7), y = c(0,1))
+
+## Correct order of the months
+```
+
+## Escape Density
+```{r}
+density(pull(dead_by_daylight, `# Escaped Survivors`))
+
+ggplot() +
+geom_density(aes(x = dead_by_daylight$`# Escaped Survivors`, fill = "", alpha = 0.)) +
+geom_vline(aes(xintercept = mean(dead_by_daylight$`# Escaped Survivors`), colour = ""), linewidth = 1, linetype = 'dashed') +
+labs(title = "Density of the number of escaped survivors per match", x = "Escaped survivors", y ="Density", colour = "Mean") +
+scale_alpha(guide = 'none') +
+guides(fill = 'none') +
+expand_limits(x = c(-1,5), y = c(0,0.65))
+```
+
+```{r}
+dead_by_daylight |> 
+ggplot() +
+geom_density(aes(x = dead_by_daylight$`# Escaped Survivors`, fill = Season, alpha = 0.3)) +
+geom_vline(aes(xintercept = mean(dead_by_daylight$`# Escaped Survivors`), colour = ""), linewidth = 1, linetype = 'dashed') +
+facet_wrap(~Season) +
+labs(title = "Density of the number of escaped survivors per match per season", x = "Escaped survivors", y ="Density", colour = "Mean") +
+scale_alpha(guide = 'none') +
+guides(fill = 'none') +
+expand_limits(x = c(-2,7), y = c(0,1))
+```
+
