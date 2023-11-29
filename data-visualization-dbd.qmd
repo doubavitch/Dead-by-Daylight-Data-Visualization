@@ -12,24 +12,25 @@ library(tidyverse)
 library(ggplot2)
 library(readr)
 library(dplyr)
-dead_by_daylight <- read_csv('Dead by Daylight data - Sheet 1.csv')
+library(GGally)
+dead_by_daylight <- read_csv('Dead by Daylight data.csv')
 dead_by_daylight
 theme_set(theme_bw())
 ```
 
 ## Repairs Density
+
 ```{r}
 density(pull(dead_by_daylight, `# Finished generators`))
 
 ggplot() +
-geom_density(aes(x = dead_by_daylight$`# Finished generators`, fill = "", alpha = 0.)) +
+geom_density(aes(x = dead_by_daylight$`# Finished generators`, fill = "", alpha = 0.3)) +
 geom_vline(aes(xintercept = mean(dead_by_daylight$`# Finished generators`), colour = ""), linewidth = 1, linetype = 'dashed') +
 labs(title = "Density of the number of repaired generators per match", x = "Repaired generators", y ="Density", colour = "Mean") +
 scale_alpha(guide = 'none') +
 guides(fill = 'none') +
 expand_limits(x = c(-1,6), y = c(0,0.65))
 ```
-
 
 ```{r}
 dead_by_daylight |> 
@@ -46,11 +47,12 @@ expand_limits(x = c(-2,7), y = c(0,1))
 ```
 
 ## Escape Density
+
 ```{r}
 density(pull(dead_by_daylight, `# Escaped Survivors`))
 
 ggplot() +
-geom_density(aes(x = dead_by_daylight$`# Escaped Survivors`, fill = "", alpha = 0.)) +
+geom_density(aes(x = dead_by_daylight$`# Escaped Survivors`, fill = "", alpha = 0.3)) +
 geom_vline(aes(xintercept = mean(dead_by_daylight$`# Escaped Survivors`), colour = ""), linewidth = 1, linetype = 'dashed') +
 labs(title = "Density of the number of escaped survivors per match", x = "Escaped survivors", y ="Density", colour = "Mean") +
 scale_alpha(guide = 'none') +
@@ -69,4 +71,144 @@ scale_alpha(guide = 'none') +
 guides(fill = 'none') +
 expand_limits(x = c(-2,7), y = c(0,1))
 ```
+
+Let's have a look at our escape rates whenever 5 generators where repaired:
+
+```{r}
+DbD_5gens <- dead_by_daylight |> filter(`# Finished generators` == 5)
+
+ggplot() +
+geom_density(aes(x = DbD_5gens$`# Escaped Survivors`, fill = "", alpha = 0.3)) +
+labs(title = "Density of the number of escaped survivors per match\nwhere 5 generators where repaired", x = "Escaped survivors", y ="Density") +
+scale_alpha(guide = 'none') +
+guides(fill = 'none') +
+expand_limits(x = c(-1,5), y = c(0,0.65))
+```
+
+## Escape and repair density depending on SBMM
+
+```{r}
+dead_by_daylight |> 
+ggplot() +
+geom_density(aes(x = dead_by_daylight$`# Finished generators`, fill = SBMM, alpha = 0.3)) +
+facet_wrap(~SBMM) +
+labs(title = "Density of the number of repaired generators per match depending on SBMM", x = "Repaired generators", y ="Density") +
+scale_alpha(guide = 'none') +
+guides(fill = 'none') +
+expand_limits(x = c(-2,6), y = c(0,0.7))
+```
+
+```{r}
+dead_by_daylight |> 
+ggplot() +
+geom_density(aes(x = dead_by_daylight$`# Escaped Survivors`, fill = SBMM, alpha = 0.3)) +
+facet_wrap(~SBMM) +
+labs(title = "Density of the number of escaped survivors per match depending on SBMM", x = "Escaped survivors", y ="Density") +
+scale_alpha(guide = 'none') +
+guides(fill = 'none') +
+expand_limits(x = c(-1,5), y = c(0,0.7))
+```
+
+
+## Killer occurrences
+
+```{r}
+ggplot() +
+  geom_bar(aes(y = fct_infreq(dead_by_daylight$Killer), fill = dead_by_daylight$Killer)) +
+  guides(fill = 'none') +
+  labs(title = "Number of occurences of each killer", x = "Count", y ="Killer") 
+```
+
+## Map occurrences
+
+```{r}
+ggplot() +
+  geom_bar(aes(y = fct_infreq(dead_by_daylight$Map), fill = dead_by_daylight$Map)) +
+  guides(fill = 'none') +
+  labs(title = "Number of occurences of each map", x = "Count", y ="Map") 
+```
+
+
+## Repairs and Escapes density per map
+
+```{r}
+dead_by_daylight |> 
+ggplot() +
+geom_density(aes(x = dead_by_daylight$`# Escaped Survivors`, fill = Map, alpha = 0.3)) +
+facet_wrap(~Map) +
+labs(title = "Density of the number of escaped survivors per match per map", x = "Escaped survivors", y ="Density") +
+scale_alpha(guide = 'none') +
+guides(fill = 'none') +
+expand_limits(x = c(-1.5,5.5), y = c(0,0.6))
+```
+
+```{r}
+dead_by_daylight |> 
+ggplot() +
+geom_density(aes(x = dead_by_daylight$`# Finished generators`, fill = Map, alpha = 0.3)) +
+facet_wrap(~Map) +
+labs(title = "Density of the number of repaired generators per match per map", x = "Repaired generators", y ="Density") +
+scale_alpha(guide = 'none') +
+guides(fill = 'none') +
+expand_limits(x = c(-1.5,6.5), y = c(0,0.6))
+```
+
+
+## Gate escapes vs. Hatch escapes
+
+```{r}
+
+```
+
+
+## Hatch escapes depending on the killers
+
+```{r}
+dead_by_daylight |> 
+ggplot() +
+  geom_bar(aes(y = fct_infreq(`# Hatch escapes`), fill = Killer)) +
+  #guides(fill = 'none') +
+  facet_wrap(~Killer) +
+  labs(title = "Frequency of hatch escapes depending on the killers", x = "Count", y ="Map") 
+# frequency = nb hatch escapes / nb occurences killer
+```
+
+
+## Hatch escapes depending on the maps
+
+```{r}
+
+```
+
+
+
+
+
+
+
+
+
+relation between gen rate and escape rate!! (with estimators)
+
+```{r}
+fit <- lm(`# Finished generators` ~ `# Escaped Survivors`, data = dead_by_daylight)
+dead_by_daylight$predicted_escape_rate <- predict(fit, newdata = dead_by_daylight)
+
+
+augment(fit) |>
+ggplot(aes(x = `# Finished generators`, y = `# Escaped Survivors`)) +
+  geom_point() +
+  geom_smooth(method = "lm", formula = 'y ~ x', se = FALSE) +
+  geom_point(aes(y = .fitted), colour = "red") +
+  geom_segment(aes(xend = `# Finished generators`, 
+                   yend =  .fitted), 
+                   linetype = "dotted") +
+  labs(x = "Finished generators",
+       y = "Escaped survivors",
+       title = "Escape rate as a function of repaired generators per match",
+       subtitle = 'With the predicted values, in red, being connected to the measured values through dotted lines')
+```
+
+
+
 
