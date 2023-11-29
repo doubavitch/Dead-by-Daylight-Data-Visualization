@@ -164,12 +164,12 @@ expand_limits(x = c(-1.5,6.5), y = c(0,0.6))
 ## Hatch escapes depending on the killers
 
 ```{r}
-dead_by_daylight |> 
-ggplot() +
-  geom_bar(aes(y = fct_infreq(`# Hatch escapes`), fill = Killer)) +
+#dead_by_daylight |> 
+#ggplot() +
+  #geom_bar(aes(y = fct_infreq(`# Hatch escapes`), fill = Killer)) +
   #guides(fill = 'none') +
-  facet_wrap(~Killer) +
-  labs(title = "Frequency of hatch escapes depending on the killers", x = "Count", y ="Map") 
+  #facet_wrap(~Killer) +
+  #labs(title = "Frequency of hatch escapes depending on the killers", x = "Count", y ="Map") 
 # frequency = nb hatch escapes / nb occurences killer
 ```
 
