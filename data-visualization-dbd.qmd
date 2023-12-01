@@ -222,11 +222,35 @@ labs(title = "Number of hatch escapes depending on the map", x = "Number of hatc
 
 ```{r}
 ggplot(dead_by_daylight, aes(x = `# Finished generators`, y = `# Escaped Survivors`)) +
-  geom_point() +
+  geom_point(colour = "darkgray") +
   geom_smooth(method = "lm", formula = 'y ~ x', se = FALSE, colour = "#CC0000") +
   labs(x = "Repaired Generators",
        y = "Escaped Survivors",
        title = "Escape rate as a function of the repair rate")
+```
+
+## Relationship between repair rate and escape rate per map (small multiples)
+
+```{r}
+ggplot(dead_by_daylight, aes(x = `# Finished generators`, y = `# Escaped Survivors`)) +
+  geom_point(colour = "darkgray") +
+  geom_smooth(method = "lm", formula = 'y ~ x', se = FALSE, colour = "#CC0000") +
+  facet_wrap(~Map) +
+  labs(x = "Repaired Generators",
+       y = "Escaped Survivors",
+       title = "Escape rate as a function of the repair rate per map")
+```
+
+## Relationship between repair rate and escape rate per killer (small multiples)
+
+```{r}
+ggplot(dead_by_daylight, aes(x = `# Finished generators`, y = `# Escaped Survivors`)) +
+  geom_point(colour = "darkgray") +
+  geom_smooth(method = "lm", formula = 'y ~ x', se = FALSE, colour = "#CC0000") +
+  facet_wrap(~Killer) +
+  labs(x = "Repaired Generators",
+       y = "Escaped Survivors",
+       title = "Escape rate as a function of the repair rate per map")
 ```
 
 
