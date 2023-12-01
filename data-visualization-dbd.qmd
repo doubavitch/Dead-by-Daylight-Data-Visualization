@@ -205,8 +205,25 @@ DbD_1esc
 
 ## Hatch escapes depending on the killers
 
+```{r}
+dead_by_daylight |> 
+ggplot() +
+geom_bar(aes(y = fct_infreq(Killer) , fill = dead_by_daylight$`# Hatch escapes`), fill = "#CC0000") +
+#facet_wrap(~Killer) +
+labs(title = "Number of hatch escapes depending on the killer", x = "Number of hatch escapes", y ="Killer")
+```
+
 
 ## Hatch escapes depending on the maps
+
+```{r}
+dead_by_daylight |> 
+ggplot() +
+geom_bar(aes(y = fct_infreq(Map) , fill = dead_by_daylight$`# Hatch escapes`), fill = "#CC0000") +
+#facet_wrap(~Killer) +
+labs(title = "Number of hatch escapes depending on the map", x = "Number of hatch escapes", y ="Map")
+```
+
 
 
 ## Relationship between repair rate and escape rate
