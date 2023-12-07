@@ -3,6 +3,7 @@ title: "Dead by Daylight Data Visualization"
 author: "Clara Duchossois"
 date: "Winter Semester 2023-2024"
 output: html_document
+echo : false
 ---
 
 We first load all the needed libraries, as well as the original data file
@@ -31,7 +32,7 @@ theme_set(theme_bw())
 #guides(fill = 'none') +
 #expand_limits(x = c(-1,6), y = c(0,0.65))
 ggplot() +
-  geom_bar(aes(x = dead_by_daylight$`# Finished generators`), fill = "#CC0000") +
+  geom_bar(aes(x = dead_by_daylight$`# Finished generators`), fill = "#9C2A23") +  
   labs(title = "Number of repaired generators per match", x = "Repaired generators", y = "Count") +
   guides(fill = 'none') 
 ```
@@ -48,7 +49,7 @@ ggplot() +
 
 dead_by_daylight |> 
 ggplot() +
-geom_bar(aes(x = dead_by_daylight$`# Finished generators`), fill = "#CC0000") +
+geom_bar(aes(x = dead_by_daylight$`# Finished generators`), fill = "#9C2A23") +
 facet_wrap(~factor(Season, c("February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December", "January"))) +
 labs(title = "Number of repaired generators per match per season", x = "Repaired generators", y ="Count") +
 scale_alpha(guide = 'none') +
@@ -67,7 +68,7 @@ guides(fill = 'none')
 #expand_limits(x = c(-1,5), y = c(0,0.65))
 
 ggplot() +
-  geom_bar(aes(x = dead_by_daylight$`# Escaped Survivors`), fill = "#CC0000") +
+  geom_bar(aes(x = dead_by_daylight$`# Escaped Survivors`), fill = "#9C2A23") +
   labs(title = "Number of escaped survivors per match", x = "Escaped survivors", y = "Count") +
   guides(fill = 'none') 
 ```
@@ -84,7 +85,7 @@ ggplot() +
 
 dead_by_daylight |> 
 ggplot() +
-geom_bar(aes(x = dead_by_daylight$`# Escaped Survivors`), fill = "#CC0000") +
+geom_bar(aes(x = dead_by_daylight$`# Escaped Survivors`), fill = "#9C2A23") +
 facet_wrap(~factor(Season, c("February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December", "January"))) +
 labs(title = "Number of escaped survivors per match per season", x = "Escaped survivors", y ="Count") +
 scale_alpha(guide = 'none') +
@@ -97,7 +98,7 @@ Let's have a look at our escape rates whenever 5 generators where repaired:
 DbD_5gens <- dead_by_daylight |> filter(`# Finished generators` == 5)
 
 ggplot() +
-geom_bar(aes(x = DbD_5gens$`# Escaped Survivors`), fill = "#CC0000") +
+geom_bar(aes(x = DbD_5gens$`# Escaped Survivors`), fill = "#9C2A23") +
 labs(title = "Number of escaped survivors per match where 5 generators where repaired", x = "Escaped survivors", y ="Count") +
 scale_alpha(guide = 'none') +
 guides(fill = 'none')
@@ -130,7 +131,7 @@ expand_limits(x = c(-1,5), y = c(0,0.7))
 
 ```{r}
 ggplot() +
-  geom_bar(aes(y = fct_infreq(dead_by_daylight$Killer)), fill = "#CC0000") +
+  geom_bar(aes(y = fct_infreq(dead_by_daylight$Killer)), fill = "#9C2A23") +
   guides(fill = 'none') +
   labs(title = "Number of occurences of each killer", x = "Count", y ="Killer") 
 ```
@@ -139,7 +140,7 @@ ggplot() +
 
 ```{r}
 ggplot() +
-  geom_bar(aes(y = fct_infreq(dead_by_daylight$Map)), fill = "#CC0000") +
+  geom_bar(aes(y = fct_infreq(dead_by_daylight$Map)), fill = "#9C2A23") +
   guides(fill = 'none') +
   labs(title = "Number of occurences of each map", x = "Count", y ="Map") 
 ```
@@ -149,7 +150,7 @@ ggplot() +
 ```{r}
 dead_by_daylight |> 
 ggplot() +
-geom_bar(aes(x = dead_by_daylight$`# Escaped Survivors`), fill = "#CC0000") +
+geom_bar(aes(x = dead_by_daylight$`# Escaped Survivors`), fill = "#9C2A23") +
 facet_wrap(~Map) +
 labs(title = "Density of the number of escaped survivors per match per map", x = "Escaped survivors", y ="Count") +
 guides(fill = 'none')
@@ -158,7 +159,7 @@ guides(fill = 'none')
 ```{r}
 dead_by_daylight |> 
 ggplot() +
-geom_bar(aes(x = dead_by_daylight$`# Finished generators`), fill = "#CC0000") +
+geom_bar(aes(x = dead_by_daylight$`# Finished generators`), fill = "#9C2A23") +
 facet_wrap(~Map) +
 labs(title = "Density of the number of repaired generators per match per map", x = "Repaired generators", y ="Count") +
 guides(fill = 'none')
@@ -170,12 +171,12 @@ guides(fill = 'none')
 dead_by_daylight <-  mutate(dead_by_daylight, gate_escapes = `# Escaped Survivors` - `# Hatch escapes`)
 
 ggplot() +
-  geom_bar(aes(x = dead_by_daylight$gate_escapes), fill = "#CC0000") +
+  geom_bar(aes(x = dead_by_daylight$gate_escapes), fill = "#9C2A23") +
   labs(title = "Number of survivors who escaped through the gates per match", x = "Number of survivors who escaped through the gates", y = "Count") +
   guides(fill = 'none') 
 
 ggplot() +
-  geom_bar(aes(x = dead_by_daylight$`# Hatch escapes` ), fill = "#CC0000") +
+  geom_bar(aes(x = dead_by_daylight$`# Hatch escapes` ), fill = "#9C2A23") +
   labs(title = "Number of survivors who escaped through the hatch per match", x = "Number of survivors who escaped through the hatch", y = "Count") +
   guides(fill = 'none') 
 ```
@@ -201,9 +202,37 @@ DbD_1esc
 ```{r}
 dead_by_daylight |> 
 ggplot() +
-geom_bar(aes(y = fct_infreq(Killer) , fill = dead_by_daylight$`# Hatch escapes`), fill = "#CC0000") +
+geom_bar(aes(y = fct_infreq(Killer) , fill = dead_by_daylight$`# Hatch escapes`), fill = "#9C2A23") +
 #facet_wrap(~Killer) +
 labs(title = "Number of hatch escapes depending on the killer", x = "Number of hatch escapes", y ="Killer")
+```
+
+```{r}
+hatch_frequency_killer <- dead_by_daylight |> 
+  group_by(Killer) |> 
+  summarise(TotalEncounters = n(),
+            TotalHatchEscapes = sum(`# Hatch escapes`),
+            Frequency = (TotalHatchEscapes / TotalEncounters))
+hatch_frequency_killer
+
+hatch_frequency_killer |> 
+  ggplot() +
+  geom_bar(aes(x = Frequency, y = fct_infreq(Killer, Frequency)), fill = "#9C2A23", stat = "identity", position = "dodge") +
+  labs(title = "Hach escape rates per killer", x = "Frequency of Hatch Escapes", y = "Killer")
+```
+
+```{r}
+hatch_frequency_map <- dead_by_daylight |> 
+  group_by(Map) |> 
+  summarise(TotalEncounters = n(),
+            TotalHatchEscapes = sum(`# Hatch escapes`),
+            Frequency = (TotalHatchEscapes / TotalEncounters))
+hatch_frequency_map
+
+hatch_frequency_map |> 
+  ggplot() +
+  geom_bar(aes(x = Frequency, y = fct_infreq(Map, Frequency)), fill = "#9C2A23", stat = "identity", position = "dodge") +
+  labs(title = "Hach escape rates per map", x = "Frequency of Hatch Escapes", y = "Map")
 ```
 
 
@@ -212,7 +241,7 @@ labs(title = "Number of hatch escapes depending on the killer", x = "Number of h
 ```{r}
 dead_by_daylight |> 
 ggplot() +
-geom_bar(aes(y = fct_infreq(Map) , fill = dead_by_daylight$`# Hatch escapes`), fill = "#CC0000") +
+geom_bar(aes(y = fct_infreq(Map) , fill = dead_by_daylight$`# Hatch escapes`), fill = "#9C2A23") +
 #facet_wrap(~Killer) +
 labs(title = "Number of hatch escapes depending on the map", x = "Number of hatch escapes", y ="Map")
 ```
@@ -223,7 +252,7 @@ labs(title = "Number of hatch escapes depending on the map", x = "Number of hatc
 ```{r}
 ggplot(dead_by_daylight, aes(x = `# Finished generators`, y = `# Escaped Survivors`)) +
   geom_point(colour = "darkgray") +
-  geom_smooth(method = "lm", formula = 'y ~ x', se = FALSE, colour = "#CC0000") +
+  geom_smooth(method = "lm", formula = 'y ~ x', se = FALSE, colour = "#9C2A23") +
   labs(x = "Repaired Generators",
        y = "Escaped Survivors",
        title = "Escape rate as a function of the repair rate")
@@ -234,7 +263,7 @@ ggplot(dead_by_daylight, aes(x = `# Finished generators`, y = `# Escaped Survivo
 ```{r}
 ggplot(dead_by_daylight, aes(x = `# Finished generators`, y = `# Escaped Survivors`)) +
   geom_point(colour = "darkgray") +
-  geom_smooth(method = "lm", formula = 'y ~ x', se = FALSE, colour = "#CC0000") +
+  geom_smooth(method = "lm", formula = 'y ~ x', se = FALSE, colour = "#9C2A23") +
   facet_wrap(~Map) +
   labs(x = "Repaired Generators",
        y = "Escaped Survivors",
@@ -246,26 +275,65 @@ ggplot(dead_by_daylight, aes(x = `# Finished generators`, y = `# Escaped Survivo
 ```{r}
 ggplot(dead_by_daylight, aes(x = `# Finished generators`, y = `# Escaped Survivors`)) +
   geom_point(colour = "darkgray") +
-  geom_smooth(method = "lm", formula = 'y ~ x', se = FALSE, colour = "#CC0000") +
+  geom_smooth(method = "lm", formula = 'y ~ x', se = FALSE, colour = "#9C2A23") +
   facet_wrap(~Killer) +
   labs(x = "Repaired Generators",
        y = "Escaped Survivors",
-       title = "Escape rate as a function of the repair rate per map")
+       title = "Escape rate as a function of the repair rate per killer")
+
+# Heat map with correlation factors!!
+```
+
+```{r}
+cor_data <- dead_by_daylight |> 
+  group_by(Map, Killer) |> 
+  summarise(Correlation = cor(`# Finished generators`, `# Escaped Survivors`))
+
+ggplot(cor_data, aes(x = Map, y = Killer)) +
+  geom_tile(aes(fill = Correlation)) +
+  theme(axis.text.x=element_text(angle = 90, hjust = 0)) +
+  scale_fill_continuous(na.value = '#6D6D6D') +
+  scale_fill_gradient(low="#9C2A23", high="#2E63A1") +#2E63A1
+  labs(x = "Map",
+       y = "Killer",
+       title = "Correlation between the escape rate and the repair rate\nper killer and per map")
 ```
 
 
+
 ```{r}
+#dead_by_daylight <- mutate(dead_by_daylight, Win = )
+# if #escapes ≥ 2, win = true
+
+
+
+# summarize hatchfrquency per map and per killer
+#ggplot(dead_by_daylight,aes(x = Map, y = Killer)) +
+  #geom_tile(aes(fill = `# Escaped Survivors`)) +
+  #theme(axis.text.x=element_text(angle = 90, hjust = 0))
+
+# fill should be average # escaped survivors
+# fill could be count of wins per map and killer
+```
+
+
+
+```{r}
+#library(rayshader)
 #dbd_1 <- ggplot(dead_by_daylight, aes(Map, Killer)) +
-  #geom_raster(aes(fill = dead_by_daylight$`# Escaped Survivors`)) +
+  #geom_raster(aes(fill = `# Escaped Survivors`)) +
   #ggtitle("3D Plotting in R from 2D_ggplot_graphics") +
-  #labs(caption = "Package: rayshader") +
-  #theme(axis.text = element_text(size = 12),
-        #title = element_text(size = 12,face="bold"),
-        #panel.border= element_rect(size=2,color="black",fill=NA))  
+  #labs(caption = "Package: rayshader", fill = "Escaped Survivors") +
+  #theme(axis.text = element_text(size = 12), axis.text.x=element_text(angle = 90, hjust = 0), title = element_text(size = 12,face="bold"), panel.border= element_rect(size=2,color="black",fill=NA))  
+#dbd_1
 
 #plot_gg(dbd_1, multicore = TRUE, width = 8, height = 8, scale = 300, 
           #zoom = 0.6, phi = 60,
           #background = "#afceff",shadowcolor = "#3a4f70")
+
+
+#Color Palette = #3C629C surv blue
+# original red #CC0000
 ```
 
 
