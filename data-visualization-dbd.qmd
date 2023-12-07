@@ -218,7 +218,7 @@ hatch_frequency_killer
 hatch_frequency_killer |> 
   ggplot() +
   geom_bar(aes(x = Frequency, y = fct_infreq(Killer, Frequency)), fill = "#9C2A23", stat = "identity", position = "dodge") +
-  labs(title = "Hach escape rates per killer", x = "Frequency of Hatch Escapes", y = "Killer")
+  labs(title = "Hatch escape rates per killer", x = "Frequency of Hatch Escapes", y = "Killer")
 ```
 
 ```{r}
@@ -232,7 +232,7 @@ hatch_frequency_map
 hatch_frequency_map |> 
   ggplot() +
   geom_bar(aes(x = Frequency, y = fct_infreq(Map, Frequency)), fill = "#2E63A1", stat = "identity", position = "dodge") +
-  labs(title = "Hach escape rates per map", x = "Frequency of Hatch Escapes", y = "Map")
+  labs(title = "Hatch escape rates per map", x = "Frequency of Hatch Escapes", y = "Map")
 ```
 
 
@@ -293,11 +293,17 @@ cor_data <- dead_by_daylight |>
 ggplot(cor_data, aes(x = Map, y = Killer)) +
   geom_tile(aes(fill = Correlation)) +
   theme(axis.text.x=element_text(angle = 90, hjust = 0)) +
-  scale_fill_continuous(na.value = '#6D6D6D') +
-  scale_fill_gradient(low="#9C2A23", high="#2E63A1") +
+  #scale_fill_continuous(na.value = '#6D6D6D') +
+  scale_fill_gradient(low="#9C2A23", high="#2E63A1", na.value = '#6D6D6D') +
   labs(x = "Map",
        y = "Killer",
-       title = "Correlation between the escape rate and the repair rate\nper killer and per map")
+       title = "Correlation between the escape rate and the repair rate\nper killer and per map") +
+  guides(fill = guide_colorbar(title = "Correlation", 
+                               barwidth = 1, 
+                               barheight = 8,
+                               title.position = "top",
+                               title.hjust = 0.5))
+
 ```
 
 ## Heatmap of the average escape rate per killer and per map
@@ -332,6 +338,7 @@ ggplot(mean_escapes, aes(x = Map, y = Killer)) +
 
 # fill should be average # escaped survivors
 # fill could be count of wins per map and killer
+# facet by SBMM ???
 ```
 
 
@@ -351,6 +358,9 @@ ggplot(mean_escapes, aes(x = Map, y = Killer)) +
 
 
 #Color Palette = #3C629C surv blue
+#6D6D6D darkgray
+#9C2A23 killer red
+
 # original red #CC0000
 ```
 
