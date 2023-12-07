@@ -287,18 +287,23 @@ ggplot(dead_by_daylight, aes(x = `# Finished generators`, y = `# Escaped Survivo
 ```{r}
 cor_data <- dead_by_daylight |> 
   group_by(Map, Killer) |> 
-  summarise(Correlation = cor(`# Finished generators`, `# Escaped Survivors`))
+  summarise(Correlation = cor(`# Finished generators`, `# Escaped Survivors`), .groups = 'drop') |> 
+  complete(Map, Killer, fill = list(Correlation = NA))
 
 ggplot(cor_data, aes(x = Map, y = Killer)) +
   geom_tile(aes(fill = Correlation)) +
   theme(axis.text.x=element_text(angle = 90, hjust = 0)) +
   scale_fill_continuous(na.value = '#6D6D6D') +
-  scale_fill_gradient(low="#9C2A23", high="#2E63A1") +#2E63A1
+  scale_fill_gradient(low="#9C2A23", high="#2E63A1") +
   labs(x = "Map",
        y = "Killer",
        title = "Correlation between the escape rate and the repair rate\nper killer and per map")
 ```
 
+
+```{r}
+
+```
 
 
 ```{r}
