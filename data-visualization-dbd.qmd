@@ -32,7 +32,7 @@ theme_set(theme_bw())
 #guides(fill = 'none') +
 #expand_limits(x = c(-1,6), y = c(0,0.65))
 ggplot() +
-  geom_bar(aes(x = dead_by_daylight$`# Finished generators`), fill = "#9C2A23") +  
+  geom_bar(aes(x = dead_by_daylight$`# Finished generators`), fill = "#2E63A1") +  
   labs(title = "Number of repaired generators per match", x = "Repaired generators", y = "Count") +
   guides(fill = 'none') 
 ```
@@ -49,7 +49,7 @@ ggplot() +
 
 dead_by_daylight |> 
 ggplot() +
-geom_bar(aes(x = dead_by_daylight$`# Finished generators`), fill = "#9C2A23") +
+geom_bar(aes(x = dead_by_daylight$`# Finished generators`), fill = "#2E63A1") +
 facet_wrap(~factor(Season, c("February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December", "January"))) +
 labs(title = "Number of repaired generators per match per season", x = "Repaired generators", y ="Count") +
 scale_alpha(guide = 'none') +
@@ -109,7 +109,7 @@ guides(fill = 'none')
 ```{r}
 dead_by_daylight |> 
 ggplot() +
-geom_bar(aes(x = dead_by_daylight$`# Finished generators`, fill = SBMM)) +
+geom_bar(aes(x = dead_by_daylight$`# Finished generators`), fill = "#2E63A1") +
 facet_wrap(~SBMM) +
 labs(title = "Number of repaired generators per match depending on SBMM", x = "Repaired generators", y ="Count") +
 scale_alpha(guide = 'none') +
@@ -119,7 +119,7 @@ guides(fill = 'none')
 ```{r}
 dead_by_daylight |> 
 ggplot() +
-geom_bar(aes(x = dead_by_daylight$`# Escaped Survivors`, fill = SBMM)) +
+geom_bar(aes(x = dead_by_daylight$`# Escaped Survivors`), fill = "#9C2A23") +
 facet_wrap(~SBMM) +
 labs(title = "Density of the number of escaped survivors per match depending on SBMM", x = "Escaped survivors", y ="Density") +
 scale_alpha(guide = 'none') +
@@ -140,7 +140,7 @@ ggplot() +
 
 ```{r}
 ggplot() +
-  geom_bar(aes(y = fct_infreq(dead_by_daylight$Map)), fill = "#9C2A23") +
+  geom_bar(aes(y = fct_infreq(dead_by_daylight$Map)), fill = "#2E63A1") +
   guides(fill = 'none') +
   labs(title = "Number of occurences of each map", x = "Count", y ="Map") 
 ```
@@ -159,7 +159,7 @@ guides(fill = 'none')
 ```{r}
 dead_by_daylight |> 
 ggplot() +
-geom_bar(aes(x = dead_by_daylight$`# Finished generators`), fill = "#9C2A23") +
+geom_bar(aes(x = dead_by_daylight$`# Finished generators`), fill = "#2E63A1") +
 facet_wrap(~Map) +
 labs(title = "Density of the number of repaired generators per match per map", x = "Repaired generators", y ="Count") +
 guides(fill = 'none')
@@ -231,7 +231,7 @@ hatch_frequency_map
 
 hatch_frequency_map |> 
   ggplot() +
-  geom_bar(aes(x = Frequency, y = fct_infreq(Map, Frequency)), fill = "#9C2A23", stat = "identity", position = "dodge") +
+  geom_bar(aes(x = Frequency, y = fct_infreq(Map, Frequency)), fill = "#2E63A1", stat = "identity", position = "dodge") +
   labs(title = "Hach escape rates per map", x = "Frequency of Hatch Escapes", y = "Map")
 ```
 
@@ -241,7 +241,7 @@ hatch_frequency_map |>
 ```{r}
 dead_by_daylight |> 
 ggplot() +
-geom_bar(aes(y = fct_infreq(Map) , fill = dead_by_daylight$`# Hatch escapes`), fill = "#9C2A23") +
+geom_bar(aes(y = fct_infreq(Map) , fill = dead_by_daylight$`# Hatch escapes`), fill = "#2E63A1") +
 #facet_wrap(~Killer) +
 labs(title = "Number of hatch escapes depending on the map", x = "Number of hatch escapes", y ="Map")
 ```
@@ -263,7 +263,7 @@ ggplot(dead_by_daylight, aes(x = `# Finished generators`, y = `# Escaped Survivo
 ```{r}
 ggplot(dead_by_daylight, aes(x = `# Finished generators`, y = `# Escaped Survivors`)) +
   geom_point(colour = "darkgray") +
-  geom_smooth(method = "lm", formula = 'y ~ x', se = FALSE, colour = "#9C2A23") +
+  geom_smooth(method = "lm", formula = 'y ~ x', se = FALSE, colour = "#2E63A1") +
   facet_wrap(~Map) +
   labs(x = "Repaired Generators",
        y = "Escaped Survivors",
@@ -300,9 +300,22 @@ ggplot(cor_data, aes(x = Map, y = Killer)) +
        title = "Correlation between the escape rate and the repair rate\nper killer and per map")
 ```
 
-
+## Heatmap of the average escape rate per killer and per map
 ```{r}
+mean_escapes <- dead_by_daylight |> 
+  group_by(Map, Killer) |> 
+  summarise(Mean = mean(`# Escaped Survivors`), .groups = 'drop') |> 
+  complete(Map, Killer, fill = list(Mean = NA))
 
+ggplot(mean_escapes, aes(x = Map, y = Killer)) +
+  geom_tile(aes(fill = Mean)) +
+  theme(axis.text.x=element_text(angle = 90, hjust = 0)) +
+  scale_fill_continuous(na.value = '#6D6D6D') +
+  scale_fill_gradient(low="#9C2A23", high="#2E63A1") +
+  labs(x = "Map",
+       y = "Killer",
+       title = "Average escape rate per killer and per map",
+       subtitle = "To be fixed, does not treat all NAs correctly")
 ```
 
 
