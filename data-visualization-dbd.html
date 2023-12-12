@@ -251,6 +251,14 @@ lgl (1): SBMM
 <p><img src="data-visualization-dbd_files/figure-html/unnamed-chunk-16-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
+</section>
+<section id="hatch-escapes-depending-on-the-maps" class="level2">
+<h2 class="anchored" data-anchor-id="hatch-escapes-depending-on-the-maps">Hatch escapes depending on the maps</h2>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="data-visualization-dbd_files/figure-html/unnamed-chunk-17-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
 <div class="cell">
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 17 × 4
@@ -274,14 +282,6 @@ lgl (1): SBMM
 16 SH                126                24     0.190
 17 YAM               171                28     0.164</code></pre>
 </div>
-<div class="cell-output-display">
-<p><img src="data-visualization-dbd_files/figure-html/unnamed-chunk-17-1.png" class="img-fluid" width="672"></p>
-</div>
-</div>
-</section>
-<section id="hatch-escapes-depending-on-the-maps" class="level2">
-<h2 class="anchored" data-anchor-id="hatch-escapes-depending-on-the-maps">Hatch escapes depending on the maps</h2>
-<div class="cell">
 <div class="cell-output-display">
 <p><img src="data-visualization-dbd_files/figure-html/unnamed-chunk-18-1.png" class="img-fluid" width="672"></p>
 </div>
@@ -329,12 +329,29 @@ Caused by warning in `cor()`:
 <section id="heatmap-of-the-average-escape-rate-per-killer-and-per-map" class="level2">
 <h2 class="anchored" data-anchor-id="heatmap-of-the-average-escape-rate-per-killer-and-per-map">Heatmap of the average escape rate per killer and per map</h2>
 <div class="cell">
-<div class="cell-output cell-output-stderr">
-<pre><code>Scale for fill is already present.
-Adding another scale for fill, which will replace the existing scale.</code></pre>
+<div class="cell-output-display">
+<p><img src="data-visualization-dbd_files/figure-html/unnamed-chunk-24-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 442 × 5
+   Map   Killer       TotalEncounters TotalHatchEscapes Frequency
+   &lt;chr&gt; &lt;chr&gt;                  &lt;int&gt;             &lt;dbl&gt;     &lt;dbl&gt;
+ 1 AVW   Artist                     4                 1     0.25 
+ 2 AVW   Blight                    23                 4     0.174
+ 3 AVW   Cannibal                  25                 5     0.2  
+ 4 AVW   Cenobite                   3                 0     0    
+ 5 AVW   Clown                      7                 0     0    
+ 6 AVW   Deathslinger              18                 6     0.333
+ 7 AVW   Demogorgon                 9                 2     0.222
+ 8 AVW   Doctor                    18                 4     0.222
+ 9 AVW   Freddy                     8                 3     0.375
+10 AVW   Ghost Face                24                 4     0.167
+# ℹ 432 more rows</code></pre>
 </div>
 <div class="cell-output-display">
-<p><img src="data-visualization-dbd_files/figure-html/unnamed-chunk-23-1.png" class="img-fluid" width="672"></p>
+<p><img src="data-visualization-dbd_files/figure-html/unnamed-chunk-25-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 </section>

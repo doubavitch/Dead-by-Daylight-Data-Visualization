@@ -221,6 +221,17 @@ hatch_frequency_killer |>
   labs(title = "Hatch escape rates per killer", x = "Frequency of Hatch Escapes", y = "Killer")
 ```
 
+## Hatch escapes depending on the maps
+
+```{r}
+dead_by_daylight |> 
+ggplot() +
+geom_bar(aes(y = fct_infreq(Map) , fill = dead_by_daylight$`# Hatch escapes`), fill = "#2E63A1") +
+#facet_wrap(~Killer) +
+labs(title = "Number of hatch escapes depending on the map", x = "Number of hatch escapes", y ="Map")
+```
+
+
 ```{r}
 hatch_frequency_map <- dead_by_daylight |> 
   group_by(Map) |> 
@@ -233,17 +244,6 @@ hatch_frequency_map |>
   ggplot() +
   geom_bar(aes(x = Frequency, y = fct_infreq(Map, Frequency)), fill = "#2E63A1", stat = "identity", position = "dodge") +
   labs(title = "Hatch escape rates per map", x = "Frequency of Hatch Escapes", y = "Map")
-```
-
-
-## Hatch escapes depending on the maps
-
-```{r}
-dead_by_daylight |> 
-ggplot() +
-geom_bar(aes(y = fct_infreq(Map) , fill = dead_by_daylight$`# Hatch escapes`), fill = "#2E63A1") +
-#facet_wrap(~Killer) +
-labs(title = "Number of hatch escapes depending on the map", x = "Number of hatch escapes", y ="Map")
 ```
 
 
@@ -306,6 +306,25 @@ ggplot(cor_data, aes(x = Map, y = Killer)) +
 
 ```
 
+
+```{r}
+#ggplot(dead_by_daylight, aes(x = `# Finished generators`, y = `# Escaped Survivors`)) +
+  #geom_tile(aes(fill = Map)) +
+  #theme(axis.text.x=element_text(angle = 90, hjust = 0)) +
+  #scale_fill_continuous(na.value = '#6D6D6D') +
+  #scale_fill_gradient(low="#9C2A23", high="#2E63A1", na.value = '#6D6D6D') +
+  #labs(x = "Map",
+       #y = "Killer",
+       #title = "Correlation between the escape rate and the repair rate\nper killer and per map") +
+  #guides(fill = guide_colorbar(title = "Correlation", 
+                               #barwidth = 1, 
+                               #barheight = 8,
+                               #title.position = "top",
+                               #title.hjust = 0.5))
+```
+
+
+
 ## Heatmap of the average escape rate per killer and per map
 ```{r}
 mean_escapes <- dead_by_daylight |> 
@@ -316,12 +335,34 @@ mean_escapes <- dead_by_daylight |>
 ggplot(mean_escapes, aes(x = Map, y = Killer)) +
   geom_tile(aes(fill = Mean)) +
   theme(axis.text.x=element_text(angle = 90, hjust = 0)) +
-  scale_fill_continuous(na.value = '#6D6D6D') +
-  scale_fill_gradient(low="#9C2A23", high="#2E63A1") +
+  scale_fill_gradient(low="#9C2A23", high="#2E63A1", na.value = '#6D6D6D') +
   labs(x = "Map",
        y = "Killer",
        title = "Average escape rate per killer and per map",
        subtitle = "To be fixed, does not treat all NAs correctly")
+```
+
+
+```{r}
+hatch_frequency <- dead_by_daylight |> 
+  group_by(Map, Killer) |> 
+  summarise(TotalEncounters = n(), TotalHatchEscapes = sum(`# Hatch escapes`), Frequency = (TotalHatchEscapes / TotalEncounters), .groups = 'drop') |> 
+  complete(Map, Killer, fill = list(Frequency = NA))
+hatch_frequency
+
+ggplot(hatch_frequency, aes(x = Map, y = Killer)) +
+  geom_tile(aes(fill = Frequency)) +
+  theme(axis.text.x=element_text(angle = 90, hjust = 0)) +
+  #scale_fill_continuous(na.value = '#6D6D6D') +
+  scale_fill_gradient(low="#9C2A23", high="#2E63A1", na.value = '#6D6D6D') +
+  #labs(x = "Map",
+       #y = "Killer",
+       #title = "Correlation between the escape rate and the repair rate\nper killer and per map") +
+  guides(fill = guide_colorbar(title = "Correlation", 
+                               barwidth = 1, 
+                               barheight = 8,
+                               title.position = "top",
+                               title.hjust = 0.5))
 ```
 
 
@@ -339,6 +380,8 @@ ggplot(mean_escapes, aes(x = Map, y = Killer)) +
 # fill should be average # escaped survivors
 # fill could be count of wins per map and killer
 # facet by SBMM ???
+
+# heatmap to study hiw much each parameter influenced our results (SBMM...)
 ```
 
 
