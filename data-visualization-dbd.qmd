@@ -307,6 +307,33 @@ ggplot(cor_data, aes(x = Map, y = Killer)) +
 ```
 
 
+## Evolution of the escape rate
+
+```{r}
+esc_freq_season <- dead_by_daylight |> 
+  group_by(Season) |> 
+  summarise(TotalMatches = n(),
+            TotalEscapes = sum(`# Escaped Survivors`),
+            Frequency = (TotalEscapes / TotalMatches))
+
+# esc_freq_season |> 
+#   ggplot() +
+#   geom_bar(aes(y = Frequency, x = factor(Season, c("February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December", "January"))), fill = "#9C2A23", stat = "identity", position = "dodge") +
+#   labs(title = "Evolution of the escape rate throughout the year", y = "Escape rate", x = "Season")
+
+esc_freq_season |> 
+  ggplot(aes(y = Frequency, x = factor(Season, c("February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December", "January")), group = 1)) +
+  geom_point(colour = "#9C2A23") +
+  geom_line(colour = "#9C2A23") +
+  scale_y_continuous(limits = c(0, max(esc_freq_season$Frequency) + 0.5)) +
+  theme(axis.text.x=element_text(angle = 10)) +
+  labs(title = "Evolution of the escape rate throughout the year", y = "Escape rate", x = "Season")
+
+```
+
+
+
+
 ```{r}
 #ggplot(dead_by_daylight, aes(x = `# Finished generators`, y = `# Escaped Survivors`)) +
   #geom_tile(aes(fill = Map)) +
@@ -325,44 +352,44 @@ ggplot(cor_data, aes(x = Map, y = Killer)) +
 
 
 
-## Heatmap of the average escape rate per killer and per map
+<!-- ## Heatmap of the average escape rate per killer and per map -->
 ```{r}
-mean_escapes <- dead_by_daylight |> 
-  group_by(Map, Killer) |> 
-  summarise(Mean = mean(`# Escaped Survivors`), .groups = 'drop') |> 
-  complete(Map, Killer, fill = list(Mean = NA))
-
-ggplot(mean_escapes, aes(x = Map, y = Killer)) +
-  geom_tile(aes(fill = Mean)) +
-  theme(axis.text.x=element_text(angle = 90, hjust = 0)) +
-  scale_fill_gradient(low="#9C2A23", high="#2E63A1", na.value = '#6D6D6D') +
-  labs(x = "Map",
-       y = "Killer",
-       title = "Average escape rate per killer and per map",
-       subtitle = "To be fixed, does not treat all NAs correctly")
+# mean_escapes <- dead_by_daylight |> 
+#   group_by(Map, Killer) |> 
+#   summarise(Mean = mean(`# Escaped Survivors`), .groups = 'drop') |> 
+#   complete(Map, Killer, fill = list(Mean = NA))
+# 
+# ggplot(mean_escapes, aes(x = Map, y = Killer)) +
+#   geom_tile(aes(fill = Mean)) +
+#   theme(axis.text.x=element_text(angle = 90, hjust = 0)) +
+#   scale_fill_gradient(low="#9C2A23", high="#2E63A1", na.value = '#6D6D6D') +
+#   labs(x = "Map",
+#        y = "Killer",
+#        title = "Average escape rate per killer and per map",
+#        subtitle = "To be fixed, does not treat all NAs correctly")
 ```
 
 
 ```{r}
-hatch_frequency <- dead_by_daylight |> 
-  group_by(Map, Killer) |> 
-  summarise(TotalEncounters = n(), TotalHatchEscapes = sum(`# Hatch escapes`), Frequency = (TotalHatchEscapes / TotalEncounters), .groups = 'drop') |> 
-  complete(Map, Killer, fill = list(Frequency = NA))
-hatch_frequency
-
-ggplot(hatch_frequency, aes(x = Map, y = Killer)) +
-  geom_tile(aes(fill = Frequency)) +
-  theme(axis.text.x=element_text(angle = 90, hjust = 0)) +
-  #scale_fill_continuous(na.value = '#6D6D6D') +
-  scale_fill_gradient(low="#9C2A23", high="#2E63A1", na.value = '#6D6D6D') +
-  #labs(x = "Map",
-       #y = "Killer",
-       #title = "Correlation between the escape rate and the repair rate\nper killer and per map") +
-  guides(fill = guide_colorbar(title = "Correlation", 
-                               barwidth = 1, 
-                               barheight = 8,
-                               title.position = "top",
-                               title.hjust = 0.5))
+# hatch_frequency <- dead_by_daylight |> 
+#   group_by(Map, Killer) |> 
+#   summarise(TotalEncounters = n(), TotalHatchEscapes = sum(`# Hatch escapes`), Frequency = (TotalHatchEscapes / TotalEncounters), .groups = 'drop') |> 
+#   complete(Map, Killer, fill = list(Frequency = NA))
+# hatch_frequency
+# 
+# ggplot(hatch_frequency, aes(x = Map, y = Killer)) +
+#   geom_tile(aes(fill = Frequency)) +
+#   theme(axis.text.x=element_text(angle = 90, hjust = 0)) +
+#   #scale_fill_continuous(na.value = '#6D6D6D') +
+#   scale_fill_gradient(low="#9C2A23", high="#2E63A1", na.value = '#6D6D6D') +
+#   #labs(x = "Map",
+#        #y = "Killer",
+#        #title = "Correlation between the escape rate and the repair rate\nper killer and per map") +
+#   guides(fill = guide_colorbar(title = "Correlation", 
+#                                barwidth = 1, 
+#                                barheight = 8,
+#                                title.position = "top",
+#                                title.hjust = 0.5))
 ```
 
 
