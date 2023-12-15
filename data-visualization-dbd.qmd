@@ -293,8 +293,7 @@ cor_data <- dead_by_daylight |>
 ggplot(cor_data, aes(x = Map, y = Killer)) +
   geom_tile(aes(fill = Correlation)) +
   theme(axis.text.x=element_text(angle = 90, hjust = 0)) +
-  #scale_fill_continuous(na.value = '#6D6D6D') +
-  scale_fill_gradient(low="#9C2A23", high="#2E63A1", na.value = '#6D6D6D') +
+  scale_fill_gradient2(low = "#9C2A23", mid = "white", high = "#2E63A1", midpoint = 0, na.value = '#6D6D6D') +
   labs(x = "Map",
        y = "Killer",
        title = "Correlation between the escape rate and the repair rate\nper killer and per map") +
@@ -303,7 +302,6 @@ ggplot(cor_data, aes(x = Map, y = Killer)) +
                                barheight = 8,
                                title.position = "top",
                                title.hjust = 0.5))
-
 ```
 
 
@@ -323,12 +321,12 @@ esc_freq_season <- dead_by_daylight |>
 
 esc_freq_season |> 
   ggplot(aes(y = Frequency, x = factor(Season, c("February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December", "January")), group = 1)) +
-  geom_point(colour = "#9C2A23") +
-  geom_line(colour = "#9C2A23") +
+  geom_point(colour = "#9C2A23", size = 2.2) +
+  geom_line(colour = "#9C2A23", linewidth = 1) +
   scale_y_continuous(limits = c(0, max(esc_freq_season$Frequency) + 0.5)) +
+  geom_vline(xintercept = 4, linetype = "dashed", color = "#2E63A1", linewidth = 1) +
   theme(axis.text.x=element_text(angle = 10)) +
   labs(title = "Evolution of the escape rate throughout the year", y = "Escape rate", x = "Season")
-
 ```
 
 
@@ -432,6 +430,19 @@ esc_freq_season |>
 #9C2A23 killer red
 
 # original red #CC0000
+
+
+
+### try to do a likert scale plot gglikert() from ggstats (try to reduce the displayed numbers on the graph)
+### or stacked bar charts
+
+
+## quarto presentation : Reveal JS = teacher's choice
+## waffle chart (cf. Tatcher May) to compare text
+## colorspaces package + hcl_color_picker
+## colorspaces website
+
+## the message you want to convey through a plot should be the title of the plot
 ```
 
 
