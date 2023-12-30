@@ -346,24 +346,24 @@ esc_freq_season2 |>
 ## Killer pick rate against performance
 
 ```{r Pick Rate vs. Performance side by side}
-pick_rate_plot <- ggplot() +
-  geom_bar(aes(y = fct_infreq(dead_by_daylight$Killer)), fill = "#9C2A23") +
+pick_rate_plot <- ggplot(dead_by_daylight, aes(y = fct_infreq(Killer))) +
+  geom_bar(fill = "#9C2A23") +
+  geom_text(aes(label = stat(count)), stat = "count", hjust = 1, nudge_x = -.5, size = 2.7, colour = 'white') +
   guides(fill = 'none') +
-  labs(title = "Killer occurences", x = "Count", y ="Killer") 
+  labs(title = "Killer occurences", x = "Count", y = "Killer")
 
 
 killer_perf <- dead_by_daylight |> 
   group_by(Killer) |> 
   summarise(kill_rate = mean(4 - `# Escaped Survivors`), killer_count = n(), .groups = 'drop')
 
-killer_performance_plot <- killer_perf |> 
-  ggplot() +
-  geom_bar(aes(x = kill_rate, y = fct_infreq(Killer, kill_rate)), fill = "#9C2A23", stat = "identity", position = "dodge") +
+killer_performance_plot <- ggplot(killer_perf, aes(x = kill_rate, y = fct_infreq(Killer, kill_rate))) +
+  geom_bar(fill = "#9C2A23", stat = "identity", position = "dodge") +
+  geom_text(aes(label = round(kill_rate, 3)), hjust = 0, nudge_x = -.4, size = 2.7, colour = 'white') +
   labs(title = "Killer performances", x = "Average of killed survivors", y = '') 
 
 grid.arrange(pick_rate_plot, killer_performance_plot, ncol=2)
 
-## add geom_text with the numbers inside of the bars
 ## highlights the killers we are interested in
 ```
 
