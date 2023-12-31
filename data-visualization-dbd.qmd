@@ -17,6 +17,7 @@ library(broom)
 library(forcats)
 library(GGally)
 library(ggstats)
+library(gganimate)
 library(gridExtra)
 dead_by_daylight <- read_csv('Dead by Daylight data.csv')
 dead_by_daylight
@@ -346,25 +347,32 @@ esc_freq_season2 |>
 ## Killer pick rate against performance
 
 ```{r Pick Rate vs. Performance side by side}
-pick_rate_plot <- ggplot(dead_by_daylight, aes(y = fct_infreq(Killer))) +
-  geom_bar(fill = "#9C2A23") +
-  geom_text(aes(label = stat(count)), stat = "count", hjust = 1, nudge_x = -.5, size = 2.7, colour = 'white') +
-  guides(fill = 'none') +
-  labs(title = "Killer occurences", x = "Count", y = "Killer")
+pick_rate_plot <- ggplot(killer_perf, aes(x = killer_count, y = fct_infreq(Killer, killer_count))) +
+  geom_bar(aes(fill = licensed), stat = "identity", position = "dodge") +
+  geom_text(aes(label = killer_count), hjust = 1.2, nudge_x = -0.5, size = 2.7, colour = 'white') +
+  scale_fill_manual(values = c("#9C2A23", "#2E63A1"), name = 'License', labels = c('No', 'Yes')) +
+  labs(title = "Killer occurences", x = "Count", y = "Killer") +
+  theme_classic() +
+  theme(legend.position = c(0.8, 0.8),legend.direction = "vertical")
 
 
 killer_perf <- dead_by_daylight |> 
   group_by(Killer) |> 
   summarise(kill_rate = mean(4 - `# Escaped Survivors`), killer_count = n(), .groups = 'drop')
+killer_perf$licensed <- c(FALSE, FALSE, TRUE, TRUE, FALSE, FALSE, TRUE, FALSE, TRUE, TRUE, FALSE, FALSE, FALSE, FALSE, TRUE, TRUE, FALSE, FALSE, TRUE, FALSE, TRUE, FALSE, FALSE, FALSE, FALSE, FALSE)
+
 
 killer_performance_plot <- ggplot(killer_perf, aes(x = kill_rate, y = fct_infreq(Killer, kill_rate))) +
-  geom_bar(fill = "#9C2A23", stat = "identity", position = "dodge") +
-  geom_text(aes(label = round(kill_rate, 3)), hjust = 0, nudge_x = -.4, size = 2.7, colour = 'white') +
-  labs(title = "Killer performances", x = "Average of killed survivors", y = '') 
-
+  geom_bar(aes(fill = licensed), stat = "identity", position = "dodge") +
+  geom_text(aes(label = round(kill_rate, 2)), hjust = 0, nudge_x = -0.35, size = 2.7, colour = 'white') +
+  scale_fill_manual(values = c("#9C2A23", "#2E63A1")) +
+  guides(fill='none') +
+  labs(title = "Killer performances", x = "Average of killed survivors", y = '') +
+  theme_classic()
+  
 grid.arrange(pick_rate_plot, killer_performance_plot, ncol=2)
 
-## highlights the killers we are interested in
+## maybe set general theme!!
 ```
 
 ```{r Pick Rate vs. Performance grouped}
