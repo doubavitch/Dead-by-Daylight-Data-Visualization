@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.3.353">
+<meta name="generator" content="quarto-1.3.450">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -77,7 +77,7 @@ ul.task-list li input[type="checkbox"] {
 <div class="cell">
 <div class="cell-output cell-output-stderr">
 <pre><code>── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
-✔ dplyr     1.1.3     ✔ readr     2.1.4
+✔ dplyr     1.1.4     ✔ readr     2.1.4
 ✔ forcats   1.0.0     ✔ stringr   1.5.1
 ✔ ggplot2   3.4.4     ✔ tibble    3.2.1
 ✔ lubridate 1.9.3     ✔ tidyr     1.3.0
@@ -89,6 +89,21 @@ ul.task-list li input[type="checkbox"] {
 Registered S3 method overwritten by 'GGally':
   method from   
   +.gg   ggplot2
+
+No renderer backend detected. gganimate will default to writing frames to separate files
+Consider installing:
+- the `gifski` package for gif output
+- the `av` package for video output
+and restarting the R session
+
+
+Attaching package: 'gridExtra'
+
+
+The following object is masked from 'package:dplyr':
+
+    combine
+
 
 Rows: 2879 Columns: 8
 ── Column specification ────────────────────────────────────────────────────────
@@ -122,12 +137,12 @@ lgl (1): SBMM
 <h2 class="anchored" data-anchor-id="repairs-density">Repairs Density</h2>
 <div class="cell">
 <div class="cell-output-display">
-<p><img src="data-visualization-dbd_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid" width="672"></p>
+<p><img src="data-visualization-dbd_files/figure-html/unnamed-chunk-1-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <div class="cell">
 <div class="cell-output-display">
-<p><img src="data-visualization-dbd_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid" width="672"></p>
+<p><img src="data-visualization-dbd_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 </section>
@@ -135,23 +150,31 @@ lgl (1): SBMM
 <h2 class="anchored" data-anchor-id="escape-density">Escape Density</h2>
 <div class="cell">
 <div class="cell-output-display">
+<p><img src="data-visualization-dbd_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
 <p><img src="data-visualization-dbd_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
+<p>Let’s have a look at our escape rates whenever 5 generators where repaired:</p>
 <div class="cell">
 <div class="cell-output-display">
 <p><img src="data-visualization-dbd_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
-<p>Let’s have a look at our escape rates whenever 5 generators where repaired:</p>
+</section>
+<section id="map-occurrences" class="level2">
+<h2 class="anchored" data-anchor-id="map-occurrences">Map occurrences</h2>
 <div class="cell">
 <div class="cell-output-display">
 <p><img src="data-visualization-dbd_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 </section>
-<section id="escape-and-repair-density-depending-on-sbmm" class="level2">
-<h2 class="anchored" data-anchor-id="escape-and-repair-density-depending-on-sbmm">Escape and repair density depending on SBMM</h2>
+<section id="repairs-and-escapes-density-per-map" class="level2">
+<h2 class="anchored" data-anchor-id="repairs-and-escapes-density-per-map">Repairs and Escapes density per map</h2>
 <div class="cell">
 <div class="cell-output-display">
 <p><img src="data-visualization-dbd_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid" width="672"></p>
@@ -163,24 +186,19 @@ lgl (1): SBMM
 </div>
 </div>
 </section>
-<section id="killer-occurrences" class="level2">
-<h2 class="anchored" data-anchor-id="killer-occurrences">Killer occurrences</h2>
+<section id="gate-escapes-vs.-hatch-escapes" class="level2">
+<h2 class="anchored" data-anchor-id="gate-escapes-vs.-hatch-escapes">Gate escapes vs.&nbsp;Hatch escapes</h2>
 <div class="cell">
 <div class="cell-output-display">
 <p><img src="data-visualization-dbd_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid" width="672"></p>
 </div>
-</div>
-</section>
-<section id="map-occurrences" class="level2">
-<h2 class="anchored" data-anchor-id="map-occurrences">Map occurrences</h2>
-<div class="cell">
 <div class="cell-output-display">
-<p><img src="data-visualization-dbd_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid" width="672"></p>
+<p><img src="data-visualization-dbd_files/figure-html/unnamed-chunk-9-2.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 </section>
-<section id="repairs-and-escapes-density-per-map" class="level2">
-<h2 class="anchored" data-anchor-id="repairs-and-escapes-density-per-map">Repairs and Escapes density per map</h2>
+<section id="hatch-escapes-depending-on-the-killers" class="level2">
+<h2 class="anchored" data-anchor-id="hatch-escapes-depending-on-the-killers">Hatch escapes depending on the killers</h2>
 <div class="cell">
 <div class="cell-output-display">
 <p><img src="data-visualization-dbd_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid" width="672"></p>
@@ -192,98 +210,16 @@ lgl (1): SBMM
 </div>
 </div>
 </section>
-<section id="gate-escapes-vs.-hatch-escapes" class="level2">
-<h2 class="anchored" data-anchor-id="gate-escapes-vs.-hatch-escapes">Gate escapes vs.&nbsp;Hatch escapes</h2>
-<div class="cell">
-<div class="cell-output-display">
-<p><img src="data-visualization-dbd_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid" width="672"></p>
-</div>
-<div class="cell-output-display">
-<p><img src="data-visualization-dbd_files/figure-html/unnamed-chunk-13-2.png" class="img-fluid" width="672"></p>
-</div>
-</div>
-<div class="cell">
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 640 × 9
-   Map   Killer     `# Finished generators` `# Escaped Survivors` Comments      
-   &lt;chr&gt; &lt;chr&gt;                        &lt;dbl&gt;                 &lt;dbl&gt; &lt;chr&gt;         
- 1 OR    Cannibal                         5                     1 1 hatch + cam…
- 2 SH    Myers                            2                     1 1 hatch + farm
- 3 RF    Nurse                            2                     1 Russian roule…
- 4 BWS   Pig                              3                     1 Farm at the e…
- 5 HAW   Legion                           3                     1 1 hatch       
- 6 SH    Nurse                            3                     1 1 hatch       
- 7 AVW   Freddy                           4                     1 1 hatch       
- 8 YAM   Spirit                           3                     1 1 hatch       
- 9 AVW   Ghost Face                       3                     1 1 hatch       
-10 LER   Trapper                          4                     1 1 hatch + Camp
-# ℹ 630 more rows
-# ℹ 4 more variables: `# Hatch escapes` &lt;dbl&gt;, Season &lt;chr&gt;, SBMM &lt;lgl&gt;,
-#   gate_escapes &lt;dbl&gt;</code></pre>
-</div>
-</div>
-</section>
-<section id="hatch-escapes-depending-on-the-killers" class="level2">
-<h2 class="anchored" data-anchor-id="hatch-escapes-depending-on-the-killers">Hatch escapes depending on the killers</h2>
-<div class="cell">
-<div class="cell-output-display">
-<p><img src="data-visualization-dbd_files/figure-html/unnamed-chunk-15-1.png" class="img-fluid" width="672"></p>
-</div>
-</div>
-<div class="cell">
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 26 × 4
-   Killer       TotalEncounters TotalHatchEscapes Frequency
-   &lt;chr&gt;                  &lt;int&gt;             &lt;dbl&gt;     &lt;dbl&gt;
- 1 Artist                    18                 2    0.111 
- 2 Blight                   112                19    0.170 
- 3 Cannibal                 153                34    0.222 
- 4 Cenobite                  42                 4    0.0952
- 5 Clown                     69                 8    0.116 
- 6 Deathslinger             110                20    0.182 
- 7 Demogorgon                69                15    0.217 
- 8 Doctor                   142                15    0.106 
- 9 Freddy                    88                20    0.227 
-10 Ghost Face               146                21    0.144 
-# ℹ 16 more rows</code></pre>
-</div>
-<div class="cell-output-display">
-<p><img src="data-visualization-dbd_files/figure-html/unnamed-chunk-16-1.png" class="img-fluid" width="672"></p>
-</div>
-</div>
-</section>
 <section id="hatch-escapes-depending-on-the-maps" class="level2">
 <h2 class="anchored" data-anchor-id="hatch-escapes-depending-on-the-maps">Hatch escapes depending on the maps</h2>
 <div class="cell">
 <div class="cell-output-display">
-<p><img src="data-visualization-dbd_files/figure-html/unnamed-chunk-17-1.png" class="img-fluid" width="672"></p>
+<p><img src="data-visualization-dbd_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <div class="cell">
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 17 × 4
-   Map   TotalEncounters TotalHatchEscapes Frequency
-   &lt;chr&gt;           &lt;int&gt;             &lt;dbl&gt;     &lt;dbl&gt;
- 1 AVW               378                71     0.188
- 2 BAP               129                27     0.209
- 3 BWS               184                21     0.114
- 4 CF                360                58     0.161
- 5 CP                198                43     0.217
- 6 DDS               102                14     0.137
- 7 EOC                30                 3     0.1  
- 8 GID               105                19     0.181
- 9 HA                146                17     0.116
-10 HAW                96                27     0.281
-11 LER               100                16     0.16 
-12 MCM               374                57     0.152
-13 OR                152                35     0.230
-14 RCPD               44                 6     0.136
-15 RF                184                34     0.185
-16 SH                126                24     0.190
-17 YAM               171                28     0.164</code></pre>
-</div>
 <div class="cell-output-display">
-<p><img src="data-visualization-dbd_files/figure-html/unnamed-chunk-18-1.png" class="img-fluid" width="672"></p>
+<p><img src="data-visualization-dbd_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 </section>
@@ -291,23 +227,7 @@ lgl (1): SBMM
 <h2 class="anchored" data-anchor-id="relationship-between-repair-rate-and-escape-rate">Relationship between repair rate and escape rate</h2>
 <div class="cell">
 <div class="cell-output-display">
-<p><img src="data-visualization-dbd_files/figure-html/unnamed-chunk-19-1.png" class="img-fluid" width="672"></p>
-</div>
-</div>
-</section>
-<section id="relationship-between-repair-rate-and-escape-rate-per-map-small-multiples" class="level2">
-<h2 class="anchored" data-anchor-id="relationship-between-repair-rate-and-escape-rate-per-map-small-multiples">Relationship between repair rate and escape rate per map (small multiples)</h2>
-<div class="cell">
-<div class="cell-output-display">
-<p><img src="data-visualization-dbd_files/figure-html/unnamed-chunk-20-1.png" class="img-fluid" width="672"></p>
-</div>
-</div>
-</section>
-<section id="relationship-between-repair-rate-and-escape-rate-per-killer-small-multiples" class="level2">
-<h2 class="anchored" data-anchor-id="relationship-between-repair-rate-and-escape-rate-per-killer-small-multiples">Relationship between repair rate and escape rate per killer (small multiples)</h2>
-<div class="cell">
-<div class="cell-output-display">
-<p><img src="data-visualization-dbd_files/figure-html/unnamed-chunk-21-1.png" class="img-fluid" width="672"></p>
+<p><img src="data-visualization-dbd_files/figure-html/Relationship%20between%20repair%20rate%20and%20escape%20rate%20per%20killer%20(small%20multiples)-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <div class="cell">
@@ -316,44 +236,32 @@ lgl (1): SBMM
 The first warning was:
 ℹ In argument: `Correlation = cor(`# Finished generators`, `# Escaped
   Survivors`)`.
-ℹ In group 4: `Map = "AVW"`, `Killer = "Cenobite"`.
+ℹ In group 4: `Map = "AVW"` and `Killer = "Cenobite"`.
 Caused by warning in `cor()`:
 ! the standard deviation is zero
 ℹ Run `dplyr::last_dplyr_warnings()` to see the 27 remaining warnings.</code></pre>
 </div>
 <div class="cell-output-display">
-<p><img src="data-visualization-dbd_files/figure-html/unnamed-chunk-22-1.png" class="img-fluid" width="672"></p>
+<p><img src="data-visualization-dbd_files/figure-html/Heatmap-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 </section>
-<section id="heatmap-of-the-average-escape-rate-per-killer-and-per-map" class="level2">
-<h2 class="anchored" data-anchor-id="heatmap-of-the-average-escape-rate-per-killer-and-per-map">Heatmap of the average escape rate per killer and per map</h2>
+<section id="evolution-of-the-escape-rate" class="level2">
+<h2 class="anchored" data-anchor-id="evolution-of-the-escape-rate">Evolution of the escape rate</h2>
 <div class="cell">
 <div class="cell-output-display">
-<p><img src="data-visualization-dbd_files/figure-html/unnamed-chunk-24-1.png" class="img-fluid" width="672"></p>
+<p><img src="data-visualization-dbd_files/figure-html/unnamed-chunk-15-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
+</section>
+<section id="killer-pick-rate-against-performance" class="level2">
+<h2 class="anchored" data-anchor-id="killer-pick-rate-against-performance">Killer pick rate against performance</h2>
 <div class="cell">
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 442 × 5
-   Map   Killer       TotalEncounters TotalHatchEscapes Frequency
-   &lt;chr&gt; &lt;chr&gt;                  &lt;int&gt;             &lt;dbl&gt;     &lt;dbl&gt;
- 1 AVW   Artist                     4                 1     0.25 
- 2 AVW   Blight                    23                 4     0.174
- 3 AVW   Cannibal                  25                 5     0.2  
- 4 AVW   Cenobite                   3                 0     0    
- 5 AVW   Clown                      7                 0     0    
- 6 AVW   Deathslinger              18                 6     0.333
- 7 AVW   Demogorgon                 9                 2     0.222
- 8 AVW   Doctor                    18                 4     0.222
- 9 AVW   Freddy                     8                 3     0.375
-10 AVW   Ghost Face                24                 4     0.167
-# ℹ 432 more rows</code></pre>
-</div>
 <div class="cell-output-display">
-<p><img src="data-visualization-dbd_files/figure-html/unnamed-chunk-25-1.png" class="img-fluid" width="672"></p>
+<p><img src="data-visualization-dbd_files/figure-html/Pick%20Rate%20vs.%20Performance%20side%20by%20side-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
+<!-- ## Heatmap of the average escape rate per killer and per map -->
 </section>
 
 </main>

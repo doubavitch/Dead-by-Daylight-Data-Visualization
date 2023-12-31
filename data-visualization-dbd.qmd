@@ -231,7 +231,7 @@ hatch_frequency_map <- dead_by_daylight |>
   summarise(TotalEncounters = n(),
             TotalHatchEscapes = sum(`# Hatch escapes`),
             Frequency = (TotalHatchEscapes / TotalEncounters))
-hatch_frequency_map
+#hatch_frequency_map
 
 hatch_frequency_map |> 
   ggplot() +
@@ -277,7 +277,7 @@ ggplot(dead_by_daylight, aes(x = `# Finished generators`, y = `# Escaped Survivo
 # Heat map with correlation factors!!
 ```
 
-```{r}
+```{r Heatmap}
 cor_data <- dead_by_daylight |> 
   group_by(Map, Killer) |> 
   summarise(Correlation = cor(`# Finished generators`, `# Escaped Survivors`), .groups = 'drop') |> 
@@ -326,64 +326,55 @@ esc_freq_season |>
 ```
 
 ```{r}
-esc_freq_season2 <- dead_by_daylight |> 
-  filter(Killer %in% c("Huntress", "Wraith", "Spirit", "Trapper")) |> 
-  group_by(Season, Killer) |> 
-  summarise(TotalMatches = n(), TotalEscapes = sum(`# Escaped Survivors`),
-            Frequency = (TotalEscapes / TotalMatches), .groups = 'drop')
-
-esc_freq_season2 |> 
-  ggplot(aes(y = Frequency, x = factor(Season, c("February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December", "January")), group = 1)) +
-  geom_point(colour = "#9C2A23", size = 0) +
-  geom_line(colour = "#9C2A23", linewidth = 0.3) +
-  scale_y_continuous(limits = c(0, max(esc_freq_season$Frequency) + 0.5)) +
-  #geom_vline(xintercept = 4, linetype = "dashed", color = "#2E63A1", linewidth = 1) +
-  facet_wrap(~Killer) +
-  theme(axis.text.x=element_text(angle = 10)) +
-  labs(title = "Evolution of the escape rate throughout the year", y = "Escape rate", x = "")
+# esc_freq_season2 <- dead_by_daylight |> 
+#   filter(Killer %in% c("Huntress", "Wraith", "Spirit", "Trapper")) |> 
+#   group_by(Season, Killer) |> 
+#   summarise(TotalMatches = n(), TotalEscapes = sum(`# Escaped Survivors`),
+#             Frequency = (TotalEscapes / TotalMatches), .groups = 'drop')
+# 
+# esc_freq_season2 |> 
+#   ggplot(aes(y = Frequency, x = factor(Season, c("February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December", "January")), group = 1)) +
+#   geom_point(colour = "#9C2A23", size = 0) +
+#   geom_line(colour = "#9C2A23", linewidth = 0.3) +
+#   scale_y_continuous(limits = c(0, max(esc_freq_season$Frequency) + 0.5)) +
+#   #geom_vline(xintercept = 4, linetype = "dashed", color = "#2E63A1", linewidth = 1) +
+#   facet_wrap(~Killer) +
+#   theme(axis.text.x=element_text(angle = 10)) +
+#   labs(title = "Evolution of the escape rate throughout the year", y = "Escape rate", x = "")
 ```
 
 
 ## Killer pick rate against performance
 
 ```{r Pick Rate vs. Performance side by side}
+killer_perf <- dead_by_daylight |> 
+  group_by(Killer) |> 
+  summarise(kill_rate = mean(4 - `# Escaped Survivors`), killer_count = n(), .groups = 'drop')
+killer_perf$DLC_type <- c('Original DLC', 'Original DLC', 'Franchise DLC', 'Franchise DLC', 'Original DLC', 'Original DLC', 'Franchise DLC', 'Original DLC', 'Franchise DLC', 'Franchise DLC', 'Original DLC', 'Base game', 'Base game', 'Original DLC', 'Franchise DLC', 'Franchise DLC', 'Base game', 'Original DLC', 'Franchise DLC', 'Original DLC', 'Franchise DLC', 'Original DLC', 'Base game', 'Original DLC', 'Original DLC', 'Base game')
+
 pick_rate_plot <- ggplot(killer_perf, aes(x = killer_count, y = fct_infreq(Killer, killer_count))) +
-  geom_bar(aes(fill = licensed), stat = "identity", position = "dodge") +
+  geom_bar(aes(fill = DLC_type), stat = "identity", position = "dodge") +
   geom_text(aes(label = killer_count), hjust = 1.2, nudge_x = -0.5, size = 2.7, colour = 'white') +
-  scale_fill_manual(values = c("#9C2A23", "#2E63A1"), name = 'License', labels = c('No', 'Yes')) +
+  scale_fill_manual(values = c("#9C2A23", "#a37d42", '#403b36'), name = 'Type of DLC', labels = c('Base game', 'Franchise DLC', 'Original DLC')) +
   labs(title = "Killer occurences", x = "Count", y = "Killer") +
   theme_classic() +
   theme(legend.position = c(0.8, 0.8),legend.direction = "vertical")
 
-
-killer_perf <- dead_by_daylight |> 
-  group_by(Killer) |> 
-  summarise(kill_rate = mean(4 - `# Escaped Survivors`), killer_count = n(), .groups = 'drop')
-killer_perf$licensed <- c(FALSE, FALSE, TRUE, TRUE, FALSE, FALSE, TRUE, FALSE, TRUE, TRUE, FALSE, FALSE, FALSE, FALSE, TRUE, TRUE, FALSE, FALSE, TRUE, FALSE, TRUE, FALSE, FALSE, FALSE, FALSE, FALSE)
-
-
 killer_performance_plot <- ggplot(killer_perf, aes(x = kill_rate, y = fct_infreq(Killer, kill_rate))) +
-  geom_bar(aes(fill = licensed), stat = "identity", position = "dodge") +
+  geom_bar(aes(fill = DLC_type), stat = "identity", position = "dodge") +
   geom_text(aes(label = round(kill_rate, 2)), hjust = 0, nudge_x = -0.35, size = 2.7, colour = 'white') +
-  scale_fill_manual(values = c("#9C2A23", "#2E63A1")) +
+  scale_fill_manual(values = c('#9C2A23', "#a37d42", '#403b36')) +
   guides(fill='none') +
   labs(title = "Killer performances", x = "Average of killed survivors", y = '') +
   theme_classic()
   
 grid.arrange(pick_rate_plot, killer_performance_plot, ncol=2)
 
+
+## add pic of each killer for each bar
 ## maybe set general theme!!
+## '#403b36', "#a37d42"
 ```
-
-```{r Pick Rate vs. Performance grouped}
-# killer_perf |> 
-#   ggplot(aes(x = Count, y = fct_infreq(Killer, killer_count), fill = )) +
-#     geom_bar(position = "dodge")
-```
-
-
-
-
 
 ```{r}
 #### likert plot with distribution of kills per killer : 2 as the neutral, and then distrib of kills
