@@ -1,0 +1,98 @@
+---
+title: "Death is not an escape"
+subtitle: "Data visualisation based on the game 'Dead by Daylight'"
+author: "Clara Duchossois"
+date: "2024-01-24"
+format: 
+  revealjs: 
+    theme: dark
+editor: visual
+warnings: false
+title-slide-attributes:
+  data-background-image: /dead-by-daylight-key-art.png
+---
+
+```{r setup}
+library(tidyverse)
+library(ggplot2)
+library(readr)
+library(dplyr)
+library(broom)
+library(forcats)
+library(GGally)
+library(ggstats)
+library(gganimate)
+library(gridExtra)
+
+#theme_set(theme_bw()
+
+dead_by_daylight <- read_csv('Dead by Daylight data.csv')
+```
+
+## Introduction {background-image=/dbd-gallery-background.jpg}
+
+
+
+
+## Killer performance is not a criterion for the killers' pick rate {background-image=/dbd-gallery-background.jpg}
+
+```{r}
+killer_perf <- dead_by_daylight |> 
+  group_by(Killer) |> 
+  summarise(kill_rate = mean(4 - `# Escaped Survivors`), killer_count = n(), .groups = 'drop')
+killer_perf$DLC_type <- c('Original DLC', 'Original DLC', 'Franchise DLC', 'Franchise DLC', 'Original DLC', 'Original DLC', 'Franchise DLC', 'Original DLC', 'Franchise DLC', 'Franchise DLC', 'Original DLC', 'Base game', 'Base game', 'Original DLC', 'Franchise DLC', 'Franchise DLC', 'Base game', 'Original DLC', 'Franchise DLC', 'Original DLC', 'Franchise DLC', 'Original DLC', 'Base game', 'Original DLC', 'Original DLC', 'Base game')
+
+pick_rate_plot <- ggplot(killer_perf, aes(x = killer_count, y = fct_infreq(Killer, killer_count))) +
+  geom_bar(aes(fill = DLC_type), stat = "identity", position = "dodge") +
+  geom_text(aes(label = killer_count), hjust = 1.2, nudge_x = -0.5, size = 2.7, colour = 'white') +
+  scale_fill_manual(values = c("#9C2A23", "#a37d42", '#403b36'), name = 'Type of DLC', labels = c('Base game', 'Franchise DLC', 'Original DLC')) +
+  labs(title = "Killer occurences", x = "Count", y = "Killer") +
+  theme(panel.background = element_rect(fill='transparent'),
+        plot.background = element_rect(fill='transparent', color=NA),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        legend.background = element_rect(fill='transparent'),
+        legend.box.background = element_rect(fill='transparent'),
+        text = element_text(color = 'white'),
+        legend.text = element_text(color = 'white'),
+        axis.text = element_text(color = 'white')) +
+  theme(legend.position = c(0.8, 0.8),legend.direction = "vertical",
+        legend.box.background = element_rect(fill = "transparent", color = NA))
+
+killer_performance_plot <- ggplot(killer_perf, aes(x = kill_rate, y = fct_infreq(Killer, kill_rate))) +
+  geom_bar(aes(fill = DLC_type), stat = "identity", position = "dodge") +
+  geom_text(aes(label = round(kill_rate, 2)), hjust = 0, nudge_x = -0.35, size = 2.7, colour = 'white') +
+  scale_fill_manual(values = c('#9C2A23', "#a37d42", '#403b36')) +
+  guides(fill='none') +
+  labs(title = "Killer performances", x = "Average of killed survivors", y = '') +
+  theme(panel.background = element_rect(fill='transparent'),
+        plot.background = element_rect(fill='transparent', color=NA),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        legend.background = element_rect(fill='transparent'),
+        legend.box.background = element_rect(fill='transparent'),
+        text = element_text(color = 'white'),
+        legend.text = element_text(color = 'white'),
+        axis.text = element_text(color = 'white'))
+  
+#grid.arrange(pick_rate_plot, killer_performance_plot, ncol=2)
+
+
+library(cowplot)
+
+combined_plot <- plot_grid(pick_rate_plot, killer_performance_plot, ncol = 2, align = "h")
+
+# Set the background of the combined plot to transparent
+combined_plot <- combined_plot + theme_minimal() +
+  theme(
+    plot.background = element_rect(fill = "transparent", color = NA),
+    panel.background = element_rect(fill = "transparent", color = NA))
+
+
+ggsave("combined_plot.png", combined_plot, bg = "transparent")
+
+
+```
+
+![](combined_plot.png)
+
