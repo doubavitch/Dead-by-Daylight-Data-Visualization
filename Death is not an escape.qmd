@@ -52,7 +52,6 @@ pick_rate_plot <- ggplot(killer_perf, aes(x = killer_count, y = fct_infreq(Kille
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank(),
         legend.background = element_rect(fill='transparent'),
-        legend.box.background = element_rect(fill='transparent'),
         text = element_text(color = 'white'),
         legend.text = element_text(color = 'white'),
         axis.text = element_text(color = 'white')) +
@@ -69,8 +68,6 @@ killer_performance_plot <- ggplot(killer_perf, aes(x = kill_rate, y = fct_infreq
         plot.background = element_rect(fill='transparent', color=NA),
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank(),
-        legend.background = element_rect(fill='transparent'),
-        legend.box.background = element_rect(fill='transparent'),
         text = element_text(color = 'white'),
         legend.text = element_text(color = 'white'),
         axis.text = element_text(color = 'white'))
@@ -96,3 +93,37 @@ ggsave("combined_plot.png", combined_plot, bg = "transparent")
 
 ![](combined_plot.png)
 
+## Best map/killer combinations {background-image=/dbd-gallery-background.jpg}
+
+```{r Heatmap}
+cor_data <- dead_by_daylight |> 
+  group_by(Map, Killer) |> 
+  summarise(Correlation = cor(`# Finished generators`, `# Escaped Survivors`), .groups = 'drop') |> 
+  complete(Map, Killer, fill = list(Correlation = NA))
+
+cor_data_plot <- ggplot(cor_data, aes(x = Map, y = Killer)) +
+  geom_tile(aes(fill = Correlation)) +
+  theme(axis.text.x=element_text(angle = 90, hjust = 0)) +
+  scale_fill_gradient2(low = "#9C2A23", mid = "white", high = "#2E63A1", midpoint = 0, na.value = '#6D6D6D') +
+  labs(x = "Map",
+       y = "Killer",
+       title = "Correlation between the escape rate and the repair rate\nper killer and per map") +
+  guides(fill = guide_colorbar(title = "Correlation", 
+                               barwidth = 1, 
+                               barheight = 8,
+                               title.position = "top",
+                               title.hjust = 0.5)) +
+  theme(panel.background = element_rect(fill='transparent'),
+        plot.background = element_rect(fill='transparent', color=NA),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        legend.background = element_rect(fill='transparent'),
+        text = element_text(color = 'white'),
+        legend.text = element_text(color = 'white'),
+        axis.text = element_text(color = 'white'))
+
+ggsave("heatmap.png", cor_data_plot, bg = "transparent")
+# adjust the size
+```
+
+![](heatmap.png)
