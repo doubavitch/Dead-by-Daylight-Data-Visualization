@@ -23,6 +23,7 @@ library(GGally)
 library(ggstats)
 library(gganimate)
 library(gridExtra)
+library(HH)
 
 #theme_set(theme_bw()
 
@@ -93,6 +94,36 @@ ggsave("combined_plot.png", combined_plot, bg = "transparent")
 
 ![](combined_plot.png)
 
+## Speaking of performance... {background-image=/dbd-gallery-background.jpg}
+
+```{r}
+kills_distribution <- dead_by_daylight |> 
+  group_by(Killer, `# Escaped Survivors`) |> 
+  summarise(Matches = n()) |> 
+  group_by(Killer) |> 
+  mutate(Percentage = (Matches / sum(Matches)) * 100) |> 
+  pivot_wider(names_from = `# Escaped Survivors`, values_from = c(Matches, Percentage))
+
+colnames(kills_distribution) <- c("Killer", "4K_Count", "3K_Count", "2K_Count", "1K_Count", "0K_Count", 
+                                   "4K_Percentage", "3K_Percentage", "2K_Percentage", "1K_Percentage", "0K_Percentage")
+
+kills_distribution_long <- kills_distribution |> 
+  pivot_longer(cols = '4K_Count':'0K_Percentage', 
+               names_to = c("Kills", ".value"), 
+               names_sep = "_")
+
+kills_distrib_perc <- kills_distribution |>  dplyr::select(Killer, '4K_Percentage', '3K_Percentage', '2K_Percentage', '1K_Percentage', '0K_Percentage')
+
+likert_plot <- HH::likert(Killer ~ ., kills_distrib_perc, main="Distributions of the kills per killer", ylab= '', as.percent=TRUE, positive.order=TRUE, rightAxis = FALSE, par.settings = list(bg = "transparent"))
+
+likert_plot
+
+#png("likert_plot.png")
+#print(likert_plot)
+#dev.off()
+```
+
+
 ## Best map/killer combinations {background-image=/dbd-gallery-background.jpg}
 
 ```{r Heatmap}
@@ -120,7 +151,8 @@ cor_data_plot <- ggplot(cor_data, aes(x = Map, y = Killer)) +
         legend.background = element_rect(fill='transparent'),
         text = element_text(color = 'white'),
         legend.text = element_text(color = 'white'),
-        axis.text = element_text(color = 'white'))
+        axis.text = element_text(color = 'white')) #+
+  #coord_fixed()
 
 ggsave("heatmap.png", cor_data_plot, bg = "transparent")
 # adjust the size
