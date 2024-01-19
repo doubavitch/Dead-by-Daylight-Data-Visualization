@@ -1,0 +1,101 @@
+---
+title: "Dead by Daylight Data Visualization - Final"
+author: "Clara Duchossois"
+date: "Winter Semester 2023-2024"
+output: html_document
+---
+
+We first load all the needed libraries, as well as the original data file
+
+```{r setup}
+library(tidyverse)
+library(ggplot2)
+library(readr)
+library(dplyr)
+library(broom)
+library(forcats)
+library(GGally)
+library(ggstats)
+library(likert)
+library(gganimate)
+library(gridExtra)
+library(HH)
+library(stringr)
+dead_by_daylight <- read_csv('Dead by Daylight data.csv')
+theme_set(theme_bw())
+```
+
+
+## Killer pick rate against performance
+
+```{r Pick Rate vs. Performance side by side}
+killer_perf <- dead_by_daylight |> 
+  group_by(Killer) |> 
+  summarise(kill_rate = mean(4 - `# Escaped Survivors`), killer_count = n(), .groups = 'drop')
+
+killer_perf$DLC_type <- c('Original DLC', 'Original DLC', 'Franchise DLC', 'Franchise DLC', 'Original DLC', 'Original DLC', 'Franchise DLC', 'Original DLC', 'Franchise DLC', 'Franchise DLC', 'Original DLC', 'Base game', 'Base game', 'Original DLC', 'Franchise DLC', 'Franchise DLC', 'Base game', 'Original DLC', 'Franchise DLC', 'Original DLC', 'Franchise DLC', 'Original DLC', 'Base game', 'Original DLC', 'Original DLC', 'Base game')
+
+pick_rate_plot <- ggplot(killer_perf, aes(x = killer_count, y = fct_infreq(Killer, killer_count))) +
+  geom_bar(aes(fill = DLC_type), stat = "identity", position = "dodge") +
+  geom_text(aes(label = killer_count), hjust = 1.2, nudge_x = -0.5, size = 2.7, colour = 'white') +
+  scale_fill_manual(values = c("#9C2A23", "#a37d42", '#403b36'), name = 'Type of DLC', labels = c('Base game', 'Franchise DLC', 'Original DLC')) +
+  labs(title = "Killer occurences", x = "Count", y = "Killer") +
+  theme_classic() +
+  theme(legend.position = c(0.8, 0.8),legend.direction = "vertical")
+
+killer_performance_plot <- ggplot(killer_perf, aes(x = kill_rate, y = fct_infreq(Killer, kill_rate))) +
+  geom_bar(aes(fill = DLC_type), stat = "identity", position = "dodge") +
+  geom_text(aes(label = round(kill_rate, 2)), hjust = 0, nudge_x = -0.35, size = 2.7, colour = 'white') +
+  scale_fill_manual(values = c('#9C2A23', "#a37d42", '#403b36')) +
+  guides(fill='none') +
+  labs(title = "Killer performances", x = "Average of killed survivors", y = '') +
+  theme_classic()
+  
+grid.arrange(pick_rate_plot, killer_performance_plot, ncol=2)
+```
+
+## Relationship between repair rate and escape rate, per killer and per map
+
+```{r Heatmap}
+cor_data <- dead_by_daylight |>
+  group_by(Killer, Map) |>
+  summarise(Correlation = cor(`# Finished generators`, `# Escaped Survivors`, method = "spearman"), .groups = 'drop') |> 
+  complete(Map, Killer, fill = list(Correlation = NA)) # we choose spearman's correlation factor, as it more suited for ordinal data
+
+ggplot(cor_data, aes(x = Map, y = Killer)) +
+  geom_tile(aes(fill = Correlation)) +
+  theme(axis.text.x=element_text(angle = 90, hjust = 0)) +
+  scale_fill_gradient2(low = "#9C2A23", mid = "white", high = "#2E63A1", midpoint = 0, na.value = '#6D6D6D') +
+  labs(x = "Map",
+       y = "Killer",
+       title = "Correlation between the escape rate and the repair rate\nper killer and per map") +
+  guides(fill = guide_colorbar(title = "Correlation",
+                               barwidth = 1,
+                               barheight = 8,
+                               title.position = "top",
+                               title.hjust = 0.5))
+```
+
+## Distribution of the number of kills per killer
+
+```{r Likert}
+kills_distribution <- dead_by_daylight |> 
+  group_by(Killer, `# Escaped Survivors`) |> 
+  summarise(Matches = n()) |> 
+  group_by(Killer) |> 
+  mutate(Percentage = (Matches / sum(Matches)) * 100) |> 
+  pivot_wider(names_from = `# Escaped Survivors`, values_from = c(Matches, Percentage))
+
+colnames(kills_distribution) <- c("Killer", "4K_Count", "3K_Count", "2K_Count", "1K_Count", "0K_Count", 
+                                   "4K_Percentage", "3K_Percentage", "2K_Percentage", "1K_Percentage", "0K_Percentage")
+
+kills_distrib_perc <- kills_distribution |>  dplyr::select(Killer, '4K_Percentage', '3K_Percentage', '2K_Percentage', '1K_Percentage', '0K_Percentage')
+
+likert_plot <- HH::likert(Killer ~ ., kills_distrib_perc, main="Distributions of the kills per killer", 
+                          ylab= '', as.percent=TRUE, positive.order=TRUE, 
+                          rightAxis = FALSE,
+                          auto.key = list( columns = 1, space = 'right', text=c("4 kills","3 kills", "2 kills", "1 kill", "0 kill")), col=c("#5e1914", "#9C2A23", "darkgray", "#2E63A1", "#243b5e"))
+
+likert_plot
+```
+
