@@ -418,17 +418,17 @@ kills_distribution_long <- kills_distribution |>
                names_sep = "_")
 
 
-ggplot(kills_distribution_long) + 
-  geom_bar(aes(y = Killer, x = Percentage, fill = factor(Kills)), stat = "identity", position = position_stack(reverse = TRUE)) +
-  labs(title = "Distributions of the kills per killer",
-       y = "Killer",
-       x = "",
-       fill = "Number of Kills") +
-  scale_fill_manual(values = c("#e41a1c", "#377eb8", "#4daf4a", "#ff7f00", "#984ea3"))
+# ggplot(kills_distribution_long) + 
+#   geom_bar(aes(y = Killer, x = Percentage, fill = factor(Kills)), stat = "identity", position = position_stack(reverse = TRUE)) +
+#   labs(title = "Distributions of the kills per killer",
+#        y = "Killer",
+#        x = "",
+#        fill = "Number of Kills") +
+#   scale_fill_manual(values = c("#e41a1c", "#377eb8", "#4daf4a", "#ff7f00", "#984ea3"))
 
 ```
 
-```{r}
+```{r Likert plot}
 likert_plot <- HH::likert(Killer ~ ., kills_distrib_perc, main="Distributions of the kills per killer", 
                           ylab= '', as.percent=TRUE, positive.order=TRUE, 
                           rightAxis = FALSE, 
@@ -441,7 +441,7 @@ likert_plot <- HH::likert(Killer ~ ., kills_distrib_perc, main="Distributions of
               }
               )
 
-png("likert_plot.png", bg = "transparent", width = 7, height = 5.2, units = 'in', res = 300)
+png("likert_plot.png", bg = "transparent", width = 8, height = 5.2, units = 'in', res = 300)
 print(likert_plot)
 dev.off()
 
@@ -451,38 +451,63 @@ dev.off()
 ```{r}
 # count the most common comments
 # Farm - Killer let us escape through the gates : blue
-# Tunnel - Camp - Slugfest (?) : red
+# Tunnel - Camp - Idiot : red
+
+library(waffle)
 
 comments_bhvr <- dead_by_daylight |> 
   summarise(total_matches = n(),
+            BM_count = sum(str_detect(replace_na(Comments, ''), regex("(idiot)|(tunnel)|(camp)", ignore_case = TRUE))),
+            BM_perc = (BM_count / total_matches) * 100,
             idiot_count = sum(str_detect(replace_na(Comments, ''), regex("idiot", ignore_case = TRUE))),
-            idiot_perc = (idiot_count / total_matches) * 100,
+            idiot_perc_tot = (idiot_count / total_matches) * 100,
+            idiot_perc_bm = (idiot_count / BM_count) * 100,
             tunnel_count = sum(str_detect(replace_na(Comments, ''), regex("tunnel", ignore_case = TRUE))),
-            tunnel_perc = (tunnel_count / total_matches) * 100,
+            tunnel_perc_tot = (tunnel_count / total_matches) * 100,
+            tunnel_perc_bm = (tunnel_count / BM_count) * 100,
             camp_count = sum(str_detect(replace_na(Comments, ''), regex("camp", ignore_case = TRUE))),
-            camp_perc = (camp_count / total_matches) * 100,
-            DC_count = sum(str_detect(replace_na(Comments, ''), regex("DC", ignore_case = TRUE))),
-            DC_perc = (DC_count / total_matches) * 100,
-            kill_let_esc_count = sum(str_detect(replace_na(Comments, ''), regex("killer let us escape through the gates", ignore_case = TRUE))),
-            kill_let_esc_perc = (kill_let_esc_count / total_matches) * 100,
-            fair_count = sum(str_detect(replace_na(Comments, ''), regex("fair", ignore_case = TRUE))),
-            fair_perc = (fair_count / total_matches) * 100,
-            skilled_count = sum(str_detect(replace_na(Comments, ''), regex("skilled", ignore_case = TRUE))),
-            skilled_perc = (skilled_count / total_matches) * 100,
-            given_count = sum(str_detect(replace_na(Comments, ''), regex("given", ignore_case = TRUE))),
-            given_perc = (given_count / total_matches) * 100,
-            good_count = sum(str_detect(replace_na(Comments, ''), regex("good", ignore_case = TRUE))),
-            good_perc = (good_count / total_matches) * 100,)
-
+            camp_perc_tot = (camp_count / total_matches) * 100,
+            camp_perc_bm = (camp_count / BM_count) * 100)
+            #DC_count = sum(str_detect(replace_na(Comments, ''), regex("DC", ignore_case = TRUE))),
+            #DC_perc = (DC_count / total_matches) * 100,
+            #kill_let_esc_count = sum(str_detect(replace_na(Comments, ''), regex("killer let us escape through the gates", ignore_case = TRUE))),
+            #kill_let_esc_perc = (kill_let_esc_count / total_matches) * 100,
+            #fair_count = sum(str_detect(replace_na(Comments, ''), regex("fair", ignore_case = TRUE))),
+            #fair_perc = (fair_count / total_matches) * 100,
+            #skilled_count = sum(str_detect(replace_na(Comments, ''), regex("skilled", ignore_case = TRUE))),
+            #skilled_perc = (skilled_count / total_matches) * 100,
+            #given_count = sum(str_detect(replace_na(Comments, ''), regex("given", ignore_case = TRUE))),
+            #given_perc = (given_count / total_matches) * 100,
+            #good_count = sum(str_detect(replace_na(Comments, ''), regex("good", ignore_case = TRUE))),
+            #good_perc = (good_count / total_matches) * 100)
+            
 comments_bhvr
+
+bm_summary <- tibble(Type_of_BM = c("BM", "idiot", "tunnel", "camp"),
+                     Count = c(comments_bhvr$BM_count, comments_bhvr$idiot_count, comments_bhvr$tunnel_count, comments_bhvr$camp_count),
+                     Percentage_total = c(100, comments_bhvr$idiot_perc_tot, comments_bhvr$tunnel_perc_tot, comments_bhvr$camp_perc_tot),
+                     Percentage_BM = c(comments_bhvr$BM_perc, comments_bhvr$idiot_perc_bm, comments_bhvr$tunnel_perc_bm, comments_bhvr$camp_perc_bm))
+
+bm_summary
 
 
 # trash - sandbag
 
 
-# put them in a waffle chart
+
+idiot_data <- data.frame(category = c("Idiot", ""), value = c(round(comments_bhvr$idiot_perc_tot, digits = 0), 100 - round(comments_bhvr$idiot_perc_tot, digits = 0)))
+tunnel_data <- data.frame(category = c("Tunnel", ""), value = c(round(comments_bhvr$tunnel_perc_tot, digits = 0), 100 - round(comments_bhvr$tunnel_perc_tot, digits = 0)))
+camp_data <- data.frame(category = c("Camp", ""), value = c(round(comments_bhvr$camp_perc_tot, digits = 0), 100 - round(comments_bhvr$camp_perc_tot, digits = 0)))
+
+idiot_plot <- waffle(idiot_data, rows = 10, size = 0.5, title = "Percentage of matches with an 'Idiot'", flip = TRUE)
+tunnel_plot <- waffle(tunnel_data, rows = 10, size = 0.5, title = "Percentage of matches where the killer tunneled", flip = TRUE)
+camp_plot <- waffle(camp_data, rows = 10, size = 0.5, title = "Percentage of matches where the killer camped", flip = TRUE)
 
 
+
+# gather in one plot all the BM and total it up by the number of matches where we made a comment about any of those behaviours
+# make a plot to compare good manners and BM and then a plot to analyse the distribution of each of those
+# 3 plots
 ```
 
 
