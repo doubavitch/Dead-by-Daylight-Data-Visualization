@@ -28,23 +28,21 @@ library(HH)
 dead_by_daylight <- read_csv('Dead by Daylight data.csv')
 ```
 
-## Introduction {.smaller background-image=/dbd-gallery-background.jpg}
+## Introduction {.smaller background-image="/dbd-gallery-background.jpg"}
 
-Data manually collected from my own matches in the online game 'Dead by Daylight' over the year 2021.
-[Raw CSV file](https://github.com/doubavitch/Dead-by-Daylight-Data-Visualization/blob/main/Dead%20by%20Daylight%20data.csv)
+Data manually collected from my own matches in the online game 'Dead by Daylight' over the year 2021. [Raw CSV file](https://github.com/doubavitch/Dead-by-Daylight-Data-Visualization/blob/main/Dead%20by%20Daylight%20data.csv)
 
-How the game works: 
+How the game works:
 
-- 1 killer, 4 survivors
-- Killer: Injure, hook and eventually kill as many survivors as possible
-- Survivors: Repair generators and try to open the exit gates and escape (only after 5 generators where repaired) 
+-   1 killer, 4 survivors
+-   Killer: Injure, hook and eventually kill as many survivors as possible
+-   Survivors: Repair generators and try to open the exit gates and escape (only after 5 generators where repaired)
 
 [GitHub repository](https://github.com/doubavitch/Dead-by-Daylight-Data-Visualization)
 
 [More about the game](https://deadbydaylight.com)
 
-
-## Killer performance is not a criterion for the killers' pick rate {background-image=/dbd-gallery-background.jpg}
+## Killer performance is not a criterion for the killers' pick rate {background-image="/dbd-gallery-background.jpg"}
 
 ```{r}
 killer_perf <- dead_by_daylight |> 
@@ -81,15 +79,13 @@ killer_performance_plot <- ggplot(killer_perf, aes(x = kill_rate, y = fct_infreq
         text = element_text(color = 'white'),
         legend.text = element_text(color = 'white'),
         axis.text = element_text(color = 'white'))
-  
-#grid.arrange(pick_rate_plot, killer_performance_plot, ncol=2)
 
 
 library(cowplot)
 
 combined_plot <- plot_grid(pick_rate_plot, killer_performance_plot, ncol = 2, align = "h")
 
-# Set the background of the combined plot to transparent
+# We set the background of the combined plot to transparent
 combined_plot <- combined_plot + theme_minimal() +
   theme(
     plot.background = element_rect(fill = "transparent", color = NA),
@@ -97,13 +93,11 @@ combined_plot <- combined_plot + theme_minimal() +
 
 
 ggsave("combined_plot.png", combined_plot, bg = "transparent")
-
-
 ```
 
 ![](combined_plot.png)
 
-## Speaking of performance... {background-image=/dbd-gallery-background.jpg}
+## Speaking of performance... {background-image="/dbd-gallery-background.jpg"}
 
 ```{r}
 kills_distribution <- dead_by_daylight |> 
@@ -128,7 +122,7 @@ likert_plot <- HH::likert(Killer ~ ., kills_distrib_perc, main="Distributions of
 
 ![](likert_plot.png)
 
-## Best (and worst) map/killer combinations {background-image=/dbd-gallery-background.jpg}
+## Best (and worst) map/killer combinations {background-image="/dbd-gallery-background.jpg"}
 
 ```{r Heatmap}
 cor_data <- dead_by_daylight |>
@@ -143,8 +137,8 @@ cor_data_plot <- ggplot(cor_data, aes(x = Map, y = Killer)) +
   labs(x = "Map",
        y = "Killer",
        title = "Correlation between the escape rate and the repair rate\nper killer and per map") +
-  guides(fill = guide_colorbar(title = "Correlation", 
-                               barwidth = 1, 
+  guides(fill = guide_colorbar(title = "Correlation",
+                               barwidth = 1,
                                barheight = 8,
                                title.position = "top",
                                title.hjust = 0.5)) +
@@ -155,11 +149,9 @@ cor_data_plot <- ggplot(cor_data, aes(x = Map, y = Killer)) +
         legend.background = element_rect(fill='transparent'),
         text = element_text(color = 'white'),
         legend.text = element_text(color = 'white'),
-        axis.text = element_text(color = 'white')) #+
-  #coord_fixed()
+        axis.text = element_text(color = 'white'))
 
 ggsave("heatmap.png", cor_data_plot, bg = "transparent")
-# adjust the size
 ```
 
 ![](heatmap.png)
