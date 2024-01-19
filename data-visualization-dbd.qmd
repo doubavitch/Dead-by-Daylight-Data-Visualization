@@ -17,8 +17,11 @@ library(broom)
 library(forcats)
 library(GGally)
 library(ggstats)
+library(likert)
 library(gganimate)
 library(gridExtra)
+library(HH)
+library(stringr)
 dead_by_daylight <- read_csv('Dead by Daylight data.csv')
 dead_by_daylight
 theme_set(theme_bw())
@@ -278,10 +281,10 @@ ggplot(dead_by_daylight, aes(x = `# Finished generators`, y = `# Escaped Survivo
 ```
 
 ```{r Heatmap}
-cor_data <- dead_by_daylight |> 
-  group_by(Map, Killer) |> 
-  summarise(Correlation = cor(`# Finished generators`, `# Escaped Survivors`), .groups = 'drop') |> 
-  complete(Map, Killer, fill = list(Correlation = NA))
+cor_data <- dead_by_daylight |>
+  group_by(Killer, Map) |>
+  summarise(Correlation = cor(`# Finished generators`, `# Escaped Survivors`, method = "spearman"), .groups = 'drop') |> 
+  complete(Map, Killer, fill = list(Correlation = NA)) # we choose spearman's correlation factor, as it more suited for ordinal data
 
 ggplot(cor_data, aes(x = Map, y = Killer)) +
   geom_tile(aes(fill = Correlation)) +
@@ -290,13 +293,12 @@ ggplot(cor_data, aes(x = Map, y = Killer)) +
   labs(x = "Map",
        y = "Killer",
        title = "Correlation between the escape rate and the repair rate\nper killer and per map") +
-  guides(fill = guide_colorbar(title = "Correlation", 
-                               barwidth = 1, 
+  guides(fill = guide_colorbar(title = "Correlation",
+                               barwidth = 1,
                                barheight = 8,
                                title.position = "top",
                                title.hjust = 0.5))
 ```
-
 
 ## Evolution of the escape rate
 
@@ -350,6 +352,7 @@ esc_freq_season |>
 killer_perf <- dead_by_daylight |> 
   group_by(Killer) |> 
   summarise(kill_rate = mean(4 - `# Escaped Survivors`), killer_count = n(), .groups = 'drop')
+
 killer_perf$DLC_type <- c('Original DLC', 'Original DLC', 'Franchise DLC', 'Franchise DLC', 'Original DLC', 'Original DLC', 'Franchise DLC', 'Original DLC', 'Franchise DLC', 'Franchise DLC', 'Original DLC', 'Base game', 'Base game', 'Original DLC', 'Franchise DLC', 'Franchise DLC', 'Base game', 'Original DLC', 'Franchise DLC', 'Original DLC', 'Franchise DLC', 'Original DLC', 'Base game', 'Original DLC', 'Original DLC', 'Base game')
 
 pick_rate_plot <- ggplot(killer_perf, aes(x = killer_count, y = fct_infreq(Killer, killer_count))) +
@@ -381,6 +384,105 @@ grid.arrange(pick_rate_plot, killer_performance_plot, ncol=2)
 
 #likert_levels <- c(0, 1, 2, 3, 4)
 #gglikert()
+```
+
+
+```{r}
+#kills_distribution <- dead_by_daylight |> 
+  #group_by(Killer, `# Escaped Survivors`) |> 
+  #summarise(Matches = n()) |> 
+  #pivot_wider(names_from = `# Escaped Survivors`, values_from = Matches)
+#colnames(kills_distribution) <- c("Killer", "0 kill", "1 kill", "2 kills", "3 kills", "4 kills")
+
+#kills_distribution_long <- kills_distribution |> 
+  #pivot_longer(cols = `0 kill`:`4 kills`, names_to = "Kills", values_to = "Matches")
+
+#kills_distribution_long
+
+kills_distribution <- dead_by_daylight |> 
+  group_by(Killer, `# Escaped Survivors`) |> 
+  summarise(Matches = n()) |> 
+  group_by(Killer) |> 
+  mutate(Percentage = (Matches / sum(Matches)) * 100) |> 
+  pivot_wider(names_from = `# Escaped Survivors`, values_from = c(Matches, Percentage))
+
+colnames(kills_distribution) <- c("Killer", "4K_Count", "3K_Count", "2K_Count", "1K_Count", "0K_Count", 
+                                   "4K_Percentage", "3K_Percentage", "2K_Percentage", "1K_Percentage", "0K_Percentage")
+
+kills_distrib_perc <- kills_distribution |>  dplyr::select(Killer, '4K_Percentage', '3K_Percentage', '2K_Percentage', '1K_Percentage', '0K_Percentage')
+
+
+kills_distribution_long <- kills_distribution |> 
+  pivot_longer(cols = '4K_Count':'0K_Percentage', 
+               names_to = c("Kills", ".value"), 
+               names_sep = "_")
+
+
+ggplot(kills_distribution_long) + 
+  geom_bar(aes(y = Killer, x = Percentage, fill = factor(Kills)), stat = "identity", position = position_stack(reverse = TRUE)) +
+  labs(title = "Distributions of the kills per killer",
+       y = "Killer",
+       x = "",
+       fill = "Number of Kills") +
+  scale_fill_manual(values = c("#e41a1c", "#377eb8", "#4daf4a", "#ff7f00", "#984ea3"))
+
+```
+
+```{r}
+likert_plot <- HH::likert(Killer ~ ., kills_distrib_perc, main="Distributions of the kills per killer", 
+                          ylab= '', as.percent=TRUE, positive.order=TRUE, 
+                          rightAxis = FALSE, 
+                          trellis.par.set(background = list(col="transparent"), add.text = list(col = 'white'), axis.line = list(col= 'white'), axis.text = list(col = 'white'), par.main.text = list(col = "white"), par.xlab.text = list(col = 'white')), 
+                          auto.key = list( columns = 1, space = 'right', text=c("4 kills","3 kills", "2 kills", "1 kill", "0 kill")), col=c("#5e1914", "#9C2A23", "darkgray", "#2E63A1", "#243b5e"),
+                          panel=function(...) { 
+                            args <- list(...)
+                            panel.text(args$x, args$y, pos=3, offset=0, labels = sprintf("%.1f%%", args$percentage))
+                            panel.barchart(...)
+              }
+              )
+
+png("likert_plot.png", bg = "transparent", width = 7, height = 5.2, units = 'in', res = 300)
+print(likert_plot)
+dev.off()
+
+#trellis.par.get()
+```
+
+```{r}
+# count the most common comments
+# Farm - Killer let us escape through the gates : blue
+# Tunnel - Camp - Slugfest (?) : red
+
+comments_bhvr <- dead_by_daylight |> 
+  summarise(total_matches = n(),
+            idiot_count = sum(str_detect(replace_na(Comments, ''), regex("idiot", ignore_case = TRUE))),
+            idiot_perc = (idiot_count / total_matches) * 100,
+            tunnel_count = sum(str_detect(replace_na(Comments, ''), regex("tunnel", ignore_case = TRUE))),
+            tunnel_perc = (tunnel_count / total_matches) * 100,
+            camp_count = sum(str_detect(replace_na(Comments, ''), regex("camp", ignore_case = TRUE))),
+            camp_perc = (camp_count / total_matches) * 100,
+            DC_count = sum(str_detect(replace_na(Comments, ''), regex("DC", ignore_case = TRUE))),
+            DC_perc = (DC_count / total_matches) * 100,
+            kill_let_esc_count = sum(str_detect(replace_na(Comments, ''), regex("killer let us escape through the gates", ignore_case = TRUE))),
+            kill_let_esc_perc = (kill_let_esc_count / total_matches) * 100,
+            fair_count = sum(str_detect(replace_na(Comments, ''), regex("fair", ignore_case = TRUE))),
+            fair_perc = (fair_count / total_matches) * 100,
+            skilled_count = sum(str_detect(replace_na(Comments, ''), regex("skilled", ignore_case = TRUE))),
+            skilled_perc = (skilled_count / total_matches) * 100,
+            given_count = sum(str_detect(replace_na(Comments, ''), regex("given", ignore_case = TRUE))),
+            given_perc = (given_count / total_matches) * 100,
+            good_count = sum(str_detect(replace_na(Comments, ''), regex("good", ignore_case = TRUE))),
+            good_perc = (good_count / total_matches) * 100,)
+
+comments_bhvr
+
+
+# trash - sandbag
+
+
+# put them in a waffle chart
+
+
 ```
 
 
@@ -499,6 +601,8 @@ grid.arrange(pick_rate_plot, killer_performance_plot, ncol=2)
 
 ## the message you want to convey through a plot should be the title of the plot
 
+
+##### explore idiot team results
 
 
 #### likert plot showing the distribution of the escapes per season -> y axis = season

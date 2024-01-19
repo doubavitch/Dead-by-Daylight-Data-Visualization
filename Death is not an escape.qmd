@@ -25,8 +25,6 @@ library(gganimate)
 library(gridExtra)
 library(HH)
 
-#theme_set(theme_bw()
-
 dead_by_daylight <- read_csv('Dead by Daylight data.csv')
 ```
 
@@ -114,23 +112,18 @@ kills_distribution_long <- kills_distribution |>
 
 kills_distrib_perc <- kills_distribution |>  dplyr::select(Killer, '4K_Percentage', '3K_Percentage', '2K_Percentage', '1K_Percentage', '0K_Percentage')
 
-likert_plot <- HH::likert(Killer ~ ., kills_distrib_perc, main="Distributions of the kills per killer", ylab= '', as.percent=TRUE, positive.order=TRUE, rightAxis = FALSE, par.settings = list(bg = "transparent"))
-
-likert_plot
-
-#png("likert_plot.png")
-#print(likert_plot)
-#dev.off()
+likert_plot <- HH::likert(Killer ~ ., kills_distrib_perc, main="Distributions of the kills per killer", ylab= '', as.percent=TRUE, positive.order=TRUE, rightAxis = FALSE, trellis.par.set(background = list(col="transparent")), auto.key = list(text=c("4 kills","3 kills", "2 kills", "1 kill", "0 kill")), col=c("#5e1914", "#9C2A23", "darkgray", "#2E63A1", "#243b5e"))
 ```
 
+![](likert_plot.png)
 
 ## Best map/killer combinations {background-image=/dbd-gallery-background.jpg}
 
 ```{r Heatmap}
-cor_data <- dead_by_daylight |> 
-  group_by(Map, Killer) |> 
-  summarise(Correlation = cor(`# Finished generators`, `# Escaped Survivors`), .groups = 'drop') |> 
-  complete(Map, Killer, fill = list(Correlation = NA))
+cor_data <- dead_by_daylight |>
+  group_by(Killer, Map) |>
+  summarise(Correlation = cor(`# Finished generators`, `# Escaped Survivors`, method = "spearman"), .groups = 'drop') |> 
+  complete(Map, Killer, fill = list(Correlation = NA)) # we choose spearman's correlation factor, as it more suited for ordinal data
 
 cor_data_plot <- ggplot(cor_data, aes(x = Map, y = Killer)) +
   geom_tile(aes(fill = Correlation)) +
