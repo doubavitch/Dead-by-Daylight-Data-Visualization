@@ -154,6 +154,11 @@ ggsave("heatmap.png", cor_data_plot, bg = "transparent")
 
 ![](heatmap.png)
 
-
 # Thank you for your attention! {background-image="/ash-williams-dead-by-daylight.jpg"}
+
 See you in the Fog...
+
+::: footer
+Special thanks to:
+Noémie Fourcade, Jessica Lumbanzila, Kilian Parant, André Dussing, Sunny Sur
+:::
