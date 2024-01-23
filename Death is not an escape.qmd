@@ -19,9 +19,7 @@ library(readr)
 library(dplyr)
 library(broom)
 library(forcats)
-library(GGally)
 library(ggstats)
-library(gganimate)
 library(gridExtra)
 library(HH)
 
@@ -31,6 +29,7 @@ dead_by_daylight <- read_csv('Dead by Daylight data.csv')
 ## Introduction {.smaller background-image="/dbd-gallery-background.jpg"}
 
 Data manually collected from my own matches in the online game 'Dead by Daylight' over the year 2021. [Raw CSV file](https://github.com/doubavitch/Dead-by-Daylight-Data-Visualization/blob/main/Dead%20by%20Daylight%20data.csv)
+
 
 How the game works:
 
