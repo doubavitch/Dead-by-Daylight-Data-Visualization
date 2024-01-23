@@ -30,12 +30,11 @@ dead_by_daylight <- read_csv('Dead by Daylight data.csv')
 
 Data manually collected from my own matches in the online game 'Dead by Daylight' over the year 2021. [Raw CSV file](https://github.com/doubavitch/Dead-by-Daylight-Data-Visualization/blob/main/Dead%20by%20Daylight%20data.csv)
 
-
 How the game works:
 
 -   1 killer, 4 survivors
 -   Killer: Injure, hook and eventually kill as many survivors as possible
--   Survivors: Repair generators and try to open the exit gates and escape (only after 5 generators where repaired)
+-   Survivors: Repair generators and try to open the exit gates and escape (only after 5 generators were repaired)
 
 [GitHub repository](https://github.com/doubavitch/Dead-by-Daylight-Data-Visualization)
 
