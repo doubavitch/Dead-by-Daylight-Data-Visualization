@@ -153,3 +153,7 @@ ggsave("heatmap.png", cor_data_plot, bg = "transparent")
 ```
 
 ![](heatmap.png)
+
+
+# Thank you for your attention! {background-image="/ash-williams-dead-by-daylight.jpg"}
+See you in the Fog...
