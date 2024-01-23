@@ -368,7 +368,7 @@ likert_plot <- HH::likert(Killer ~ ., kills_distrib_perc, main="Distributions of
                           trellis.par.set(background = list(col="transparent"), add.text = list(col = 'white'), axis.line = list(col= 'white'), axis.text = list(col = 'white'), par.main.text = list(col = "white"), par.xlab.text = list(col = 'white')), 
                           auto.key = list( columns = 1, space = 'right', text=c("4 kills","3 kills", "2 kills", "1 kill", "0 kill")), col=c("#5e1914", "#9C2A23", "darkgray", "#2E63A1", "#243b5e"))
 
-
+# We save the plot as a png with a transparent background for presentation purposes (cf. Death is not an escape.qmd)
 png("likert_plot.png", bg = "transparent", width = 8, height = 5.2, units = 'in', res = 300)
 print(likert_plot)
 dev.off()

@@ -14,10 +14,8 @@ library(readr)
 library(dplyr)
 library(broom)
 library(forcats)
-library(GGally)
 library(ggstats)
 library(likert)
-library(gganimate)
 library(gridExtra)
 library(HH)
 library(stringr)
@@ -33,8 +31,10 @@ killer_perf <- dead_by_daylight |>
   group_by(Killer) |> 
   summarise(kill_rate = mean(4 - `# Escaped Survivors`), killer_count = n(), .groups = 'drop')
 
+# We manually assign to each killer the type of DLC it is from in the game
 killer_perf$DLC_type <- c('Original DLC', 'Original DLC', 'Franchise DLC', 'Franchise DLC', 'Original DLC', 'Original DLC', 'Franchise DLC', 'Original DLC', 'Franchise DLC', 'Franchise DLC', 'Original DLC', 'Base game', 'Base game', 'Original DLC', 'Franchise DLC', 'Franchise DLC', 'Base game', 'Original DLC', 'Franchise DLC', 'Original DLC', 'Franchise DLC', 'Original DLC', 'Base game', 'Original DLC', 'Original DLC', 'Base game')
 
+# We now look at how often each killer was picked
 pick_rate_plot <- ggplot(killer_perf, aes(x = killer_count, y = fct_infreq(Killer, killer_count))) +
   geom_bar(aes(fill = DLC_type), stat = "identity", position = "dodge") +
   geom_text(aes(label = killer_count), hjust = 1.2, nudge_x = -0.5, size = 2.7, colour = 'white') +
@@ -43,6 +43,7 @@ pick_rate_plot <- ggplot(killer_perf, aes(x = killer_count, y = fct_infreq(Kille
   theme_classic() +
   theme(legend.position = c(0.8, 0.8),legend.direction = "vertical")
 
+# We also look at the performance of each killer, that is, the number of survivor each of them killed, on average
 killer_performance_plot <- ggplot(killer_perf, aes(x = kill_rate, y = fct_infreq(Killer, kill_rate))) +
   geom_bar(aes(fill = DLC_type), stat = "identity", position = "dodge") +
   geom_text(aes(label = round(kill_rate, 2)), hjust = 0, nudge_x = -0.35, size = 2.7, colour = 'white') +
@@ -51,17 +52,20 @@ killer_performance_plot <- ggplot(killer_perf, aes(x = kill_rate, y = fct_infreq
   labs(title = "Killer performances", x = "Average of killed survivors", y = '') +
   theme_classic()
   
+# We now compare the two plots by putting them side by side
 grid.arrange(pick_rate_plot, killer_performance_plot, ncol=2)
 ```
 
 ## Relationship between repair rate and escape rate, per killer and per map
 
 ```{r Heatmap}
+# We first create a tibble to study the correlation factor between the number of finished generators and the number of escaped survivors, for each killer, on each map
 cor_data <- dead_by_daylight |>
   group_by(Killer, Map) |>
   summarise(Correlation = cor(`# Finished generators`, `# Escaped Survivors`, method = "spearman"), .groups = 'drop') |> 
   complete(Map, Killer, fill = list(Correlation = NA)) # we choose spearman's correlation factor, as it more suited for ordinal data
 
+# We then plot the data in a heatmap
 ggplot(cor_data, aes(x = Map, y = Killer)) +
   geom_tile(aes(fill = Correlation)) +
   theme(axis.text.x=element_text(angle = 90, hjust = 0)) +
@@ -79,6 +83,7 @@ ggplot(cor_data, aes(x = Map, y = Killer)) +
 ## Distribution of the number of kills per killer
 
 ```{r Likert}
+# We now look create a tibble to study the distributions of the kills for each killer. For that, we look at the counts, and the percentages of the different amount of survivor killed (0, 1, 2, 3 or 4)
 kills_distribution <- dead_by_daylight |> 
   group_by(Killer, `# Escaped Survivors`) |> 
   summarise(Matches = n()) |> 
@@ -89,6 +94,7 @@ kills_distribution <- dead_by_daylight |>
 colnames(kills_distribution) <- c("Killer", "4K_Count", "3K_Count", "2K_Count", "1K_Count", "0K_Count", 
                                    "4K_Percentage", "3K_Percentage", "2K_Percentage", "1K_Percentage", "0K_Percentage")
 
+#for the following plot, we only need the percentages of the different kills
 kills_distrib_perc <- kills_distribution |>  dplyr::select(Killer, '4K_Percentage', '3K_Percentage', '2K_Percentage', '1K_Percentage', '0K_Percentage')
 
 likert_plot <- HH::likert(Killer ~ ., kills_distrib_perc, main="Distributions of the kills per killer", 
